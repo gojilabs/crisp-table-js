@@ -1,6 +1,9 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { CrispContext } from '../contexts/CrispContext'
+
+import { CrispContext } from './CrispContext'
+
+import CrispCheckbox from './CrispCheckbox'
 
 Modal.setAppElement('body')
 
@@ -12,19 +15,19 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    padding: '35px 46px 60px'
+    padding: '35px 46px 60px',
   },
   overlay: {
     backgroundColor: 'rgba(0,0,0,0.75)',
-    zIndex: 9999
-  }
+    zIndex: 9999,
+  },
 }
 
 class CrispColumnsDisabler extends React.Component {
   static contextType = CrispContext
 
   state = {
-    showModal: false
+    showModal: false,
   }
 
   toggleModal = () => {
@@ -39,14 +42,18 @@ class CrispColumnsDisabler extends React.Component {
       <React.Fragment>
         <button
           onClick={this.toggleModal}
-          className={`columns-disabler-button ${this.context.hasColumnVisibilityChanged ? '' : 'in'}active`}
-        >
-          <i className="fa fa-columns" />
+          className={`columns-disabler-button ${
+            this.context.hasColumnVisibilityChanged ? '' : 'in'
+          }active`}>
+          <i className='fa fa-columns' />
         </button>
-        <Modal isOpen={showModal} style={customStyles} onRequestClose={this.toggleModal}>
-          <div className="columns-disabler-modal">
-            <h2 className="text-center">{title} Table</h2>
-            <h4 className="text-center">Column Visibility</h4>
+        <Modal
+          isOpen={showModal}
+          style={customStyles}
+          onRequestClose={this.toggleModal}>
+          <div className='columns-disabler-modal'>
+            <h2 className='text-center'>{title} Table</h2>
+            <h4 className='text-center'>Column Visibility</h4>
             <ul>
               {columns.map((column, index) => (
                 <li key={column.title}>
@@ -61,15 +68,17 @@ class CrispColumnsDisabler extends React.Component {
                 </li>
               ))}
             </ul>
-            <div className="buttons-container">
+            <div className='buttons-container'>
               <button
-                type="button"
+                type='button'
                 onClick={this.context.setDefaultColumnsVisibility}
-                className="btn btn-lg btn-success"
-              >
+                className='btn btn-lg btn-success'>
                 Reset to default
               </button>
-              <button type="button" onClick={this.toggleModal} className="btn btn-lg btn-primary">
+              <button
+                type='button'
+                onClick={this.toggleModal}
+                className='btn btn-lg btn-primary'>
                 Close
               </button>
             </div>

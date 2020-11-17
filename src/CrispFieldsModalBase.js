@@ -4,19 +4,16 @@ import Modal from 'react-modal'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 
-// components
-import CrispCheckbox from './CrispCheckbox'
-
 // contexts
-import { CrispContext } from '../contexts/CrispContext'
+import { CrispContext } from './CrispContext'
 
 const CalendarContainer = ({ children }) =>
   children
     ? createPortal(
         React.cloneElement(children, {
-          className: 'react-datepicker-popper'
+          className: 'react-datepicker-popper',
         }),
-        document.body
+        document.body,
       )
     : null
 
@@ -30,23 +27,23 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    padding: '35px 46px 20px'
+    padding: '35px 46px 20px',
   },
   overlay: {
     backgroundColor: 'rgba(0,0,0,0.75)',
-    zIndex: 9999
-  }
+    zIndex: 9999,
+  },
 }
 
 const selectStyles = {
-  menuPortal: styles => ({
+  menuPortal: (styles) => ({
     ...styles,
-    zIndex: 9999999
+    zIndex: 9999999,
   }),
-  menuList: styles => ({
+  menuList: (styles) => ({
     ...styles,
-    maxHeight: 150
-  })
+    maxHeight: 150,
+  }),
 }
 
 const emptyCollectedData = [{}]
@@ -60,7 +57,7 @@ class CrispFieldsModalBase extends React.Component {
 
     this.state = {
       collectedData: emptyCollectedData,
-      showModal: false
+      showModal: false,
     }
   }
 
@@ -73,7 +70,9 @@ class CrispFieldsModalBase extends React.Component {
         collectedData[index].field = newValue
         break
       case 'edit-input':
-        collectedData[index].value = Array.isArray(newValue) ? newValue.map(el => el.value) : newValue
+        collectedData[index].value = Array.isArray(newValue)
+          ? newValue.map((el) => el.value)
+          : newValue
         break
       case 'edit-range-input':
         collectedData[index].range_value = newValue
@@ -87,7 +86,7 @@ class CrispFieldsModalBase extends React.Component {
     }
 
     this.setState({
-      collectedData
+      collectedData,
     })
   }
 
@@ -102,20 +101,22 @@ class CrispFieldsModalBase extends React.Component {
     if (column.select_options || column.type === 'Boolean') {
       const selectOptions = column.select_options || [
         { label: 'Yes', value: true },
-        { label: 'No', value: false }
+        { label: 'No', value: false },
       ]
       const selectedValue = Array.isArray(dataObj.value)
-        ? selectOptions.filter(option => dataObj.value.some(valueEl => valueEl === option.value))
-        : selectOptions.find(option => dataObj.value === option.value)
+        ? selectOptions.filter((option) =>
+            dataObj.value.some((valueEl) => valueEl === option.value),
+          )
+        : selectOptions.find((option) => dataObj.value === option.value)
       return (
         <Select
           options={selectOptions}
           value={selectedValue}
-          onChange={option =>
+          onChange={(option) =>
             this.handleParamChange(
               'edit-input',
               dataObjIndex,
-              option.value !== undefined ? option.value : option
+              option.value !== undefined ? option.value : option,
             )
           }
           menuPortalTarget={document.querySelector('body')}
@@ -133,24 +134,42 @@ class CrispFieldsModalBase extends React.Component {
               <DatePicker
                 selected={dataObj.value ? new Date(dataObj.value) : ''}
                 popperContainer={CalendarContainer}
-                onChange={value => this.handleParamChange('edit-input', dataObjIndex, new Date(value))}
+                onChange={(value) =>
+                  this.handleParamChange(
+                    'edit-input',
+                    dataObjIndex,
+                    new Date(value),
+                  )
+                }
                 showTimeSelect={column.type === 'Time'}
-                timeFormat="HH:mm:ss"
-                dateFormat={`dd/MM/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''}`}
-                placeholderText={`Select${rangeEnabled ? ' start ' : ' '}${placeholder}`}
+                timeFormat='HH:mm:ss'
+                dateFormat={`dd/MM/yyyy${
+                  column.type === 'Time' ? ', HH:mm:ss' : ''
+                }`}
+                placeholderText={`Select${
+                  rangeEnabled ? ' start ' : ' '
+                }${placeholder}`}
                 minDate={new Date(column.min)}
                 maxDate={new Date(column.max)}
               />
               {rangeEnabled && (
                 <DatePicker
-                  selected={dataObj.range_value ? new Date(dataObj.range_value) : ''}
+                  selected={
+                    dataObj.range_value ? new Date(dataObj.range_value) : ''
+                  }
                   popperContainer={CalendarContainer}
-                  onChange={value =>
-                    this.handleParamChange('edit-range-input', dataObjIndex, new Date(value))
+                  onChange={(value) =>
+                    this.handleParamChange(
+                      'edit-range-input',
+                      dataObjIndex,
+                      new Date(value),
+                    )
                   }
                   showTimeSelect={column.type === 'Time'}
-                  timeFormat="HH:mm:ss"
-                  dateFormat={`dd/MM/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''}`}
+                  timeFormat='HH:mm:ss'
+                  dateFormat={`dd/MM/yyyy${
+                    column.type === 'Time' ? ', HH:mm:ss' : ''
+                  }`}
                   placeholderText={`Select end ${placeholder}`}
                   minDate={new Date(column.min)}
                   maxDate={new Date(column.max)}
@@ -178,20 +197,30 @@ class CrispFieldsModalBase extends React.Component {
           return (
             <React.Fragment>
               <input
-                type="text"
-                onChange={e => {
+                type='text'
+                onChange={(e) => {
                   const newValue =
-                    column.type === 'Integer' ? e.target.value.replace(/\D/g, '') : e.target.value
+                    column.type === 'Integer'
+                      ? e.target.value.replace(/\D/g, '')
+                      : e.target.value
                   this.handleParamChange('edit-input', dataObjIndex, newValue)
                 }}
                 value={dataObj.value || ''}
                 placeholder={`${placeholder}${rangeEnabled ? ' From' : ''}`}
-                onBlur={e => {
+                onBlur={(e) => {
                   if (column.type === 'Integer') {
                     if (parseFloat(e.target.value) < column.min) {
-                      this.handleParamChange('edit-input', dataObjIndex, column.min)
+                      this.handleParamChange(
+                        'edit-input',
+                        dataObjIndex,
+                        column.min,
+                      )
                     } else if (parseFloat(e.target.value) > column.max) {
-                      this.handleParamChange('edit-input', dataObjIndex, column.max)
+                      this.handleParamChange(
+                        'edit-input',
+                        dataObjIndex,
+                        column.max,
+                      )
                     }
                   }
                 }}
@@ -199,16 +228,30 @@ class CrispFieldsModalBase extends React.Component {
               />
               {rangeEnabled && (
                 <input
-                  type="text"
-                  onChange={e => this.handleParamChange('edit-range-input', dataObjIndex, e.target.value)}
+                  type='text'
+                  onChange={(e) =>
+                    this.handleParamChange(
+                      'edit-range-input',
+                      dataObjIndex,
+                      e.target.value,
+                    )
+                  }
                   value={dataObj.range_value || ''}
                   placeholder={`${placeholder} To`}
-                  onBlur={e => {
+                  onBlur={(e) => {
                     if (column.type === 'Integer') {
                       if (parseFloat(e.target.value) < column.min) {
-                        this.handleParamChange('edit-range-input', dataObjIndex, column.min)
+                        this.handleParamChange(
+                          'edit-range-input',
+                          dataObjIndex,
+                          column.min,
+                        )
                       } else if (parseFloat(e.target.value) > column.max) {
-                        this.handleParamChange('edit-range-input', dataObjIndex, column.max)
+                        this.handleParamChange(
+                          'edit-range-input',
+                          dataObjIndex,
+                          column.max,
+                        )
                       }
                     }
                   }}
@@ -228,27 +271,30 @@ class CrispFieldsModalBase extends React.Component {
     }
   }
 
-  handleFormSubmit = e => {
+  handleFormSubmit = (e) => {
     e.preventDefault()
-    const collectedData = this.state.collectedData.reduce((accumulator, dataObj) => {
-      if (dataObj.field) {
-        if (dataObj.range_value) {
-          return {
-            ...accumulator,
-            [dataObj.field]: {
-              from: dataObj.value,
-              to: dataObj.range_value
+    const collectedData = this.state.collectedData.reduce(
+      (accumulator, dataObj) => {
+        if (dataObj.field) {
+          if (dataObj.range_value) {
+            return {
+              ...accumulator,
+              [dataObj.field]: {
+                from: dataObj.value,
+                to: dataObj.range_value,
+              },
+            }
+          } else if (dataObj.value || dataObj.value === false) {
+            return {
+              ...accumulator,
+              [dataObj.field]: dataObj.value,
             }
           }
-        } else if (dataObj.value || dataObj.value === false) {
-          return {
-            ...accumulator,
-            [dataObj.field]: dataObj.value
-          }
         }
-      }
-      return accumulator
-    }, {})
+        return accumulator
+      },
+      {},
+    )
 
     this.onSubmit(collectedData)
   }
@@ -257,38 +303,53 @@ class CrispFieldsModalBase extends React.Component {
     const { columns } = this.context.tableData
     const { collectedData, showModal } = this.state
 
-    const searchableColumns = columns.filter(column => column[this.filterColumnsFieldName])
+    const searchableColumns = columns.filter(
+      (column) => column[this.filterColumnsFieldName],
+    )
 
     return (
       <React.Fragment>
         <button
           onClick={this.toggleModal}
-          className={`fields-modal-button ${this.context.isAdvancedSearchActive ? '' : 'in'}active`}
-          type="button"
-        >
+          className={`fields-modal-button ${
+            this.context.isAdvancedSearchActive ? '' : 'in'
+          }active`}
+          type='button'>
           <i className={`fa ${this.buttonIcon || 'fa-search'}`} />
         </button>
-        <Modal isOpen={showModal} style={customStyles} onRequestClose={this.toggleModal}>
-          <form onSubmit={this.handleFormSubmit} className="fields-modal-modal">
+        <Modal
+          isOpen={showModal}
+          style={customStyles}
+          onRequestClose={this.toggleModal}>
+          <form onSubmit={this.handleFormSubmit} className='fields-modal-modal'>
             {this.modalTitle && <h2>{this.modalTitle}</h2>}
             <ul>
               {collectedData.map((dataObj, index) => {
-                const selectedValue = searchableColumns.find(option => option.field === dataObj.field)
+                const selectedValue = searchableColumns.find(
+                  (option) => option.field === dataObj.field,
+                )
 
                 return (
                   <li key={index}>
                     <Select
                       value={selectedValue || null}
-                      onChange={selectedObj =>
-                        this.handleParamChange('edit-select', index, selectedObj.field)
+                      onChange={(selectedObj) =>
+                        this.handleParamChange(
+                          'edit-select',
+                          index,
+                          selectedObj.field,
+                        )
                       }
                       options={searchableColumns}
-                      getOptionLabel={option => option.title}
-                      getOptionValue={option => option.field}
-                      placeholder="Select field"
+                      getOptionLabel={(option) => option.title}
+                      getOptionValue={(option) => option.field}
+                      placeholder='Select field'
                       styles={selectStyles}
-                      isOptionDisabled={option =>
-                        collectedData.some(collectedDataObj => collectedDataObj.field === option.field)
+                      isOptionDisabled={(option) =>
+                        collectedData.some(
+                          (collectedDataObj) =>
+                            collectedDataObj.field === option.field,
+                        )
                       }
                       menuPortalTarget={document.querySelector('body')}
                     />
@@ -296,39 +357,52 @@ class CrispFieldsModalBase extends React.Component {
                     {collectedData.length > 1 && (
                       <button
                         onClick={() => this.handleParamChange('remove', index)}
-                        type="button"
-                        className="remove-button"
+                        type='button'
+                        className='remove-button'
                       />
                     )}
                   </li>
                 )
               })}
             </ul>
-            <div className="add-new-block">
+            <div className='add-new-block'>
               {collectedData !== emptyCollectedData && (
-                <button onClick={this.clearSearch} type="button" className="btn btn-default clear-button">
+                <button
+                  onClick={this.clearSearch}
+                  type='button'
+                  className='btn btn-default clear-button'>
                   {this.cleanButtonLabel || 'Clear'}
                 </button>
               )}
               <button
                 onClick={() => this.handleParamChange('add')}
-                type="button"
+                type='button'
                 disabled={collectedData.length === searchableColumns.length}
-                className="btn btn-info"
-              >
+                className='btn btn-info'>
                 Add new
               </button>
             </div>
-            {this.getErrorText && <div className="error-text text-danger">{this.getErrorText()}</div>}
-            <div className="buttons-container">
-              <button type="submit" className="btn btn-lg btn-success btn-block">
+            {this.getErrorText && (
+              <div className='error-text text-danger'>
+                {this.getErrorText()}
+              </div>
+            )}
+            <div className='buttons-container'>
+              <button
+                type='submit'
+                className='btn btn-lg btn-success btn-block'>
                 Submit
               </button>
-              <button type="button" onClick={this.toggleModal} className="btn btn-lg btn-primary">
+              <button
+                type='button'
+                onClick={this.toggleModal}
+                className='btn btn-lg btn-primary'>
                 Cancel
               </button>
             </div>
-            {this.getFooterText && <div className="footer-text">{this.getFooterText()}</div>}
+            {this.getFooterText && (
+              <div className='footer-text'>{this.getFooterText()}</div>
+            )}
           </form>
         </Modal>
       </React.Fragment>

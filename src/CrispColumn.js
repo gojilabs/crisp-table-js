@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import {CrispContext} from '../contexts/CrispContext'
+import { CrispContext } from './CrispContext'
 
 export default class CrispColumn extends React.Component {
   static contextType = CrispContext
@@ -10,12 +10,12 @@ export default class CrispColumn extends React.Component {
     const { column } = this.props
     const { tableData, syncFragmentParams } = this.context
 
-    const order = {order_field: column.field}
+    const order = { order_field: column.field }
     if (tableData.order.field == column.field) {
       order.order_reverse = tableData.order.reverse ? 0 : 1
     }
 
-    syncFragmentParams({page: 1, ...order})
+    syncFragmentParams({ page: 1, ...order })
   }
 
   render() {
@@ -24,17 +24,18 @@ export default class CrispColumn extends React.Component {
 
     const rowClassNames = classNames({
       'crisp-column': true,
-      'searchable': searchable,
-      'sortable': sortable
+      searchable: searchable,
+      sortable: sortable,
     })
 
-    const sortDirection = tableData.order.field === field ? !!tableData.order.reverse : undefined
+    const sortDirection =
+      tableData.order.field === field ? !!tableData.order.reverse : undefined
 
     let sort_arrow = null
     if (sortable) {
       sort_arrow = ' ↕'
       if (tableData.order.field === field && sortDirection !== undefined) {
-        sort_arrow = sortDirection ?  ' ↑' : ' ↓'
+        sort_arrow = sortDirection ? ' ↑' : ' ↓'
       }
     }
 
@@ -42,10 +43,8 @@ export default class CrispColumn extends React.Component {
       <th
         onClick={sortable ? this.handleOrderChange : undefined}
         className={rowClassNames}>
-        <span className="column-name">
-          {title}
-        </span>
-        {sortable && <span className="sort-arrow">{sort_arrow}</span>}
+        <span className='column-name'>{title}</span>
+        {sortable && <span className='sort-arrow'>{sort_arrow}</span>}
       </th>
     )
   }

@@ -2,7 +2,7 @@ import React, { createRef } from 'react'
 import { CSVLink } from 'react-csv'
 
 // contexts
-import {CrispContext} from '../contexts/CrispContext'
+import { CrispContext } from './CrispContext'
 
 export default class DownloadCsv extends React.Component {
   static contextType = CrispContext
@@ -20,13 +20,13 @@ export default class DownloadCsv extends React.Component {
 
     return (
       <React.Fragment>
-        <a className="download-csv" onClick={this.handleAsyncClick}>
-          <i className="fa fa-download" />
+        <a className='download-csv' onClick={this.handleAsyncClick}>
+          <i className='fa fa-download' />
         </a>
         <CSVLink
           data={csvData}
           filename={`${tableData.title.toLocaleLowerCase()}.csv`}
-          target="_blank"
+          target='_blank'
           ref={this.linkRef}
         />
       </React.Fragment>

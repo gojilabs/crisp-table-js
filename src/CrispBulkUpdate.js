@@ -1,5 +1,5 @@
 // context
-import { CrispContext } from '../contexts/CrispContext'
+import { CrispContext } from './CrispContext'
 
 // components
 import CrispFieldsModalBase from './CrispFieldsModalBase'
@@ -15,13 +15,15 @@ class CrispBulkUpdate extends CrispFieldsModalBase {
     this.modalTitle = `${context.tableData.title} Bulk Update`
   }
 
-  onSubmit = collectedData => {
+  onSubmit = (collectedData) => {
     this.context.bulkEdit(collectedData, () => window.location.reload(true))
   }
 
   getFooterText = () => {
     const { selectedRows, tableData } = this.context
-    return `Applying this change to ${selectedRows.length} ${tableData.title.toLocaleLowerCase()} record${
+    return `Applying this change to ${
+      selectedRows.length
+    } ${tableData.title.toLocaleLowerCase()} record${
       selectedRows.length > 1 ? 's' : ''
     }`
   }

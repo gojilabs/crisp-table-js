@@ -1,7 +1,7 @@
 import React from 'react'
 
 // contexts
-import { CrispContext } from '../contexts/CrispContext'
+import { CrispContext } from './CrispContext'
 
 // components
 import RemoveButton from './RemoveButton'
@@ -23,26 +23,28 @@ export default class CrispField extends React.Component {
     const { handleFieldUpdate } = this.context
     const myValue = this.value()
 
-    const onUpdate = e => {
+    const onUpdate = (e) => {
       handleFieldUpdate(rowIndex, colIndex, e)
     }
 
     switch (column.editable.type) {
-    case 'select':
-      const label = column.editable.options.find(option => option.value === myValue)
+      case 'select':
+        const label = column.editable.options.find(
+          (option) => option.value === myValue,
+        )
 
-      return (
-        <select value={myValue} onChange={onUpdate}>
-          <option value={myValue}>{label ? label.label : 'Not set'}</option>
-          {column.editable.options
-            .filter(option => option.value !== myValue)
-            .map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-        </select>
-      )
+        return (
+          <select value={myValue} onChange={onUpdate}>
+            <option value={myValue}>{label ? label.label : 'Not set'}</option>
+            {column.editable.options
+              .filter((option) => option.value !== myValue)
+              .map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+          </select>
+        )
     }
   }
 
@@ -92,15 +94,17 @@ export default class CrispField extends React.Component {
     }
 
     switch (column.action) {
-    case 'delete':
-      return <RemoveButton onClick={onClick} />
+      case 'delete':
+        return <RemoveButton onClick={onClick} />
     }
   }
 
   value = () => {
     const { select_options } = this.props.column
     if (select_options && select_options.length && select_options.find) {
-      const option = select_options.find(opt => opt.value === this.props.value)
+      const option = select_options.find(
+        (opt) => opt.value === this.props.value,
+      )
       if (option) {
         return option.label
       }
@@ -111,13 +115,15 @@ export default class CrispField extends React.Component {
 
   render() {
     const { column, href } = this.props
-    const renderFunction = this[`render${column.editable ? 'editable' : column.type}`]
+    const renderFunction = this[
+      `render${column.editable ? 'editable' : column.type}`
+    ]
 
     const wrapWithLink = href && !column.editable && column.type !== 'Button'
 
     return wrapWithLink ? (
       <td>
-        <a href={href} className="table-link">
+        <a href={href} className='table-link'>
           {renderFunction && renderFunction()}
         </a>
       </td>

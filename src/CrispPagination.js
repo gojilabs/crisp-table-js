@@ -5,7 +5,7 @@ import CrispPage from './CrispPage'
 import CrispPageLength from './CrispPageLength'
 
 // contexts
-import {CrispContext} from '../contexts/CrispContext'
+import { CrispContext } from './CrispContext'
 
 export default class CrispPagination extends React.Component {
   static contextType = CrispContext
@@ -16,7 +16,7 @@ export default class CrispPagination extends React.Component {
 
     if (page <= pages && page > 0) {
       if (page !== tableData.page) {
-        this.context.syncFragmentParams({page})
+        this.context.syncFragmentParams({ page })
       }
     }
   }
@@ -33,9 +33,9 @@ export default class CrispPagination extends React.Component {
     return tableData.page > 1 && tableData.page <= pages
   }
 
-  handlePageLengthChange = event => {
+  handlePageLengthChange = (event) => {
     const page_length = event.target.value
-    this.context.syncFragmentParams({page_length, page: 1})
+    this.context.syncFragmentParams({ page_length, page: 1 })
   }
 
   render() {
@@ -47,9 +47,11 @@ export default class CrispPagination extends React.Component {
     let start = 1
     let stop = pages
 
-    if (pages - tableData.page <= 10) { // right-focused
+    if (pages - tableData.page <= 10) {
+      // right-focused
       start = pages - 10
-    } else if (pages > 10) { // somewhere in the middle
+    } else if (pages > 10) {
+      // somewhere in the middle
       start = tableData.page - 5
     }
 
@@ -67,45 +69,69 @@ export default class CrispPagination extends React.Component {
         <CrispPage
           key={'page-' + (page - start)}
           page={page}
-          onClick={page === tableData.page ? undefined : this.handlePageClick.bind(null, page)} />
+          onClick={
+            page === tableData.page
+              ? undefined
+              : this.handlePageClick.bind(null, page)
+          }
+        />,
       )
     }
 
     const page_text = `${pages} ${pages === 1 ? 'page' : 'pages'}`
-    const record_text = `${tableData.records_count} ${tableData.records_count === 1 ? 'record' : 'total records'}`
-    const results_text = `${tableData.results_count} ${tableData.results_count === 1 ? 'hit' : 'hits'}`
+    const record_text = `${tableData.records_count} ${
+      tableData.records_count === 1 ? 'record' : 'total records'
+    }`
+    const results_text = `${tableData.results_count} ${
+      tableData.results_count === 1 ? 'hit' : 'hits'
+    }`
 
-    const next_page_component = stop > 1 ? (
-      <span
-        className={'crisp-page' + (this.canNavigateToNextPage() ? '' : ' disabled')}
-        onClick={this.canNavigateToNextPage() ? this.handlePageClick.bind(null, tableData.page + 1) : null}>
-        {'>'}
-      </span>
-    ) : null
+    const next_page_component =
+      stop > 1 ? (
+        <span
+          className={
+            'crisp-page' + (this.canNavigateToNextPage() ? '' : ' disabled')
+          }
+          onClick={
+            this.canNavigateToNextPage()
+              ? this.handlePageClick.bind(null, tableData.page + 1)
+              : null
+          }>
+          {'>'}
+        </span>
+      ) : null
 
-    const previous_page_component = stop > 1 ? (
-      <span
-        className={'crisp-page' + (this.canNavigateToPreviousPage() ? '' : ' disabled')}
-        onClick={this.canNavigateToPreviousPage() ? this.handlePageClick.bind(null, tableData.page - 1) : null}>
-        {'<'}
-      </span>
-    ) : null
+    const previous_page_component =
+      stop > 1 ? (
+        <span
+          className={
+            'crisp-page' + (this.canNavigateToPreviousPage() ? '' : ' disabled')
+          }
+          onClick={
+            this.canNavigateToPreviousPage()
+              ? this.handlePageClick.bind(null, tableData.page - 1)
+              : null
+          }>
+          {'<'}
+        </span>
+      ) : null
 
     return (
-      <div className="crisp-pagination">
-        <div className="crisp-pagination-line">
-          <div className="left-wrapper">
+      <div className='crisp-pagination'>
+        <div className='crisp-pagination-line'>
+          <div className='left-wrapper'>
             <CrispPageLength
               page_length={tableData.page_length}
-              handlePageLengthChange={this.handlePageLengthChange} />
+              handlePageLengthChange={this.handlePageLengthChange}
+            />
           </div>
-          <div className="right-wrapper">
-            <p className="statistics">
+          <div className='right-wrapper'>
+            <p className='statistics'>
               {`${results_text} out of ${record_text} across ${page_text}`}
             </p>
           </div>
         </div>
-        <div className="pages">
+        <div className='pages'>
           {previous_page_component}
           {page_components}
           {next_page_component}
@@ -114,4 +140,3 @@ export default class CrispPagination extends React.Component {
     )
   }
 }
-

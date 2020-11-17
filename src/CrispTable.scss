@@ -1,0 +1,424 @@
+@import 'react-datepicker/dist/react-datepicker';
+
+$brand-primary: #5d9cec !default;
+$brand-danger: #f05050 !default;
+
+.crisp-table {
+  select {
+    color: inherit;
+    border: none;
+    padding: 0;
+    background: inherit;
+
+    &:active,
+    &:hover {
+      color: inherit;
+      cursor: pointer;
+    }
+  }
+
+  .crisp-search input {
+    background-color: transparent;
+  }
+
+  .download-csv {
+    padding-left: 7px;
+    padding-right: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .crisp-table-top {
+    margin: 1em auto;
+
+    & > * {
+      display: inline;
+      vertical-align: middle;
+    }
+  }
+
+  .crisp-search {
+    label {
+      margin-right: 3px;
+    }
+
+    input {
+      color: $brand-primary;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 2px dotted $brand-primary;
+      margin-left: 3px;
+      min-width: 200px;
+    }
+  }
+
+  tbody {
+    .clickable {
+      cursor: pointer;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+      }
+    }
+
+    &:hover:not(.clickable) {
+      cursor: default;
+    }
+
+    tr {
+      &:hover {
+        color: $brand-primary;
+      }
+
+      &.odd {
+        background-color: rgba(#000, 0.05);
+      }
+    }
+  }
+
+  td,
+  th {
+    word-wrap: break-word;
+    padding: 0 5px;
+
+    p {
+      margin: 0 0;
+    }
+
+    &.bulk-cell {
+      width: 38px;
+    }
+  }
+
+  .add-entity-button {
+    font-size: 32px;
+    font-weight: bold;
+    float: right;
+    padding: 0 0.5em;
+    border: 2px solid $brand-primary;
+    border-radius: 100px;
+    background-color: $brand-primary;
+    color: white;
+    transition: background-color 0.2s ease-in;
+    transition: border 0.2s ease-in;
+    transition: color 0.2s ease-in;
+
+    &:hover {
+      background-color: white;
+      border: 2px solid white;
+      color: $brand-primary;
+      transition: background-color 0.2s ease-out;
+      transition: border 0.2s ease-out;
+      transition: color 0.2s ease-out;
+      text-decoration: none;
+    }
+  }
+
+  .title {
+    margin-top: 2em;
+    font-size: 24pt;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .crisp-pagination {
+    margin-top: 1em;
+
+    .crisp-pagination-line > * {
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+    .crisp-page {
+      display: inline;
+      vertical-align: middle;
+      width: 50px;
+      height: 50px;
+      padding: 5px 10px;
+      margin-left: 3px;
+      margin-right: 3px;
+      background-color: inherit;
+      color: inherit;
+      transition: color 0.1s ease-out, background-color 0.1s ease-out;
+
+      &:not(.disabled) {
+        border: 1px solid $brand-primary;
+        border-radius: 3px;
+        color: $brand-primary;
+
+        &:hover {
+          color: white;
+          background-color: $brand-primary;
+          transition: color 0.1s ease-in, background-color 0.1s ease-in;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .crisp-page-length {
+      text-align: left;
+
+      span {
+        margin-right: 3px;
+      }
+
+      select {
+        margin-left: 3px;
+      }
+    }
+
+    .pages {
+      width: 100%;
+      margin-top: 1em;
+      text-align: center;
+    }
+
+    .left-wrapper {
+      width: 50%;
+      height: 100%;
+      left: 0;
+      position: relative;
+    }
+
+    .right-wrapper {
+      width: 50%;
+      height: 100%;
+      right: 0;
+      text-align: right;
+      position: relative;
+    }
+
+    .statistics {
+      margin: 0;
+    }
+  }
+
+  .crisp-column.sortable > *:hover {
+    cursor: pointer;
+  }
+}
+
+.fields-modal-button,
+.columns-disabler-button {
+  border: none;
+  color: $brand-primary;
+  background: none;
+  padding-left: 7px;
+  padding-right: 5px;
+}
+
+.fields-modal-modal {
+  h2 {
+    text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      position: relative;
+
+      .remove-button {
+        border: none;
+        border-radius: 50%;
+        height: 20px;
+        width: 20px;
+        align-items: center;
+        color: #fff;
+        text-align: center;
+        padding: 0;
+        background-color: $brand-danger;
+        position: absolute;
+        right: -30px;
+
+        &:after {
+          content: '';
+          position: absolute;
+          display: block;
+          height: 2px;
+          width: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #fff;
+        }
+      }
+
+      & > div {
+        width: 200px;
+        margin-left: 10px;
+
+        &:first-child {
+          margin: 0;
+        }
+      }
+
+      & > .checkbox-wrapper {
+        text-align: center;
+      }
+
+      & > input[type='text'],
+      .react-datepicker-wrapper .react-datepicker__input-container input {
+        height: 38px;
+        padding: 0 8px;
+        width: 200px;
+        margin-left: 10px;
+        border-radius: 5px;
+        border: 1px solid rgb(204, 204, 204);
+        box-sizing: border-box;
+
+        &:first-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .clear-button {
+    background-color: #eaeaea;
+  }
+
+  .footer-text {
+    color: #3a3f51;
+    letter-spacing: 0.025em;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .error-text {
+    color: $brand-danger;
+    margin-bottom: 10px;
+  }
+
+  .buttons-container {
+    display: flex;
+
+    & > * {
+      flex: 0;
+      margin-right: 10px;
+    }
+  }
+
+  .add-new-block {
+    text-align: right;
+    margin-bottom: 20px;
+
+    button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.columns-disabler-modal {
+  h2 {
+    text-align: center;
+  }
+
+  ul {
+    padding: 0;
+
+    li {
+      display: block;
+
+      label {
+        cursor: pointer;
+
+        input {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+
+    & > * {
+      flex: 0;
+      margin-right: 10px;
+
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.ReactModal__Body--open {
+  overflow: hidden;
+}
+
+.react-datepicker-popper {
+  z-index: 9999;
+}
+
+$grey: #828282;
+$border-color: #c4c4c4;
+
+.crisp-table__custom-checkbox-wrapper {
+  position: relative;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  margin: 5px;
+
+  input[type='checkbox'] {
+    height: 1px;
+    width: 1px;
+    -webkit-appearance: none;
+    margin: 5px;
+
+    & + .custom_checkbox__indicator {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 15px;
+      width: 15px;
+      transform: translate(-4px, -4px);
+      border: 2px solid $brand-primary;
+      border-radius: 1px;
+      background-color: #ffffff;
+      box-sizing: border-box;
+    }
+
+    &:checked {
+      & + .custom_checkbox__indicator {
+        background-color: $brand-primary;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDEyIDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zy+PHBhdGggZD0iTTEgMy41TDQuNSA3TDEwLjUgMSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+');
+        background-position: center;
+        background-size: 11px 9px;
+        background-repeat: no-repeat;
+      }
+    }
+
+    &:disabled {
+      & + .custom_checkbox__indicator {
+        border-color: $grey;
+      }
+
+      &:checked {
+        & + .custom_checkbox__indicator {
+          background-color: $grey;
+        }
+      }
+    }
+  }
+}

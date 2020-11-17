@@ -1,3 +1,5 @@
+import React from 'react'
+
 const CrispPage = (props) => {
   return (
     <span

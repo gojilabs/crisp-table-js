@@ -1,13 +1,16 @@
 import React from 'react'
 import axios from 'axios'
-import GojiLabs from '../components/GojiLabs'
+import GojiLabs from './GojiLabs'
 
 let CrispContext
 const { Consumer } = (CrispContext = React.createContext())
 
-const parseCurrentHash = () => JSON.parse(Buffer.from(window.location.hash, 'base64').toString('ascii') || '{}')
+const parseCurrentHash = () =>
+  JSON.parse(
+    Buffer.from(window.location.hash, 'base64').toString('ascii') || '{}',
+  )
 
-const getFragmentParams = prefix => {
+const getFragmentParams = (prefix) => {
   try {
     return parseCurrentHash()[prefix] || {}
   } catch (e) {
@@ -15,7 +18,7 @@ const getFragmentParams = prefix => {
   }
 }
 
-const fragmentParamsToState = tableData => {
+const fragmentParamsToState = (tableData) => {
   const params = getFragmentParams(tableData.prefix)
 
   const newState = {
@@ -23,7 +26,7 @@ const fragmentParamsToState = tableData => {
     page_length: 25,
     search_string: '',
     order: { field: tableData.columns[0].field, reverse: false },
-    search_params: params.search_params
+    search_params: params.search_params,
   }
 
   const page_length = params.page_length
@@ -41,7 +44,10 @@ const fragmentParamsToState = tableData => {
     newState.search_string = search_string
   }
 
-  const order = { field: params.order_field, reverse: parseInt(params.order_reverse) === 1 }
+  const order = {
+    field: params.order_field,
+    reverse: parseInt(params.order_reverse) === 1,
+  }
   if (order.field) {
     newState.order = order
   }
@@ -49,7 +55,7 @@ const fragmentParamsToState = tableData => {
   return newState
 }
 
-const objToFragmentParams = obj => {
+const objToFragmentParams = (obj) => {
   if (!obj) {
     obj = {}
   }
@@ -64,7 +70,7 @@ const objToFragmentParams = obj => {
     order_field: obj.order.field,
     order_reverse: obj.order.reverse ? 1 : 0,
     search_string: obj.search_string,
-    search_params: obj.search_params
+    search_params: obj.search_params,
   }
 }
 
@@ -78,7 +84,7 @@ class CrispProvider extends React.Component {
       csvData: [],
       tableData: { ...props, ...fragmentParamsToState(props) },
       tableDataLoading: false,
-      selectedRows: []
+      selectedRows: [],
     }
   }
 
@@ -91,7 +97,7 @@ class CrispProvider extends React.Component {
     this.submitSearchQueryFromFragment()
   }
 
-  syncFragmentParams = newFragmentParams => {
+  syncFragmentParams = (newFragmentParams) => {
     const { tableData } = this.state
 
     const fragmentParams = objToFragmentParams(fragmentParamsToState(tableData))
@@ -102,12 +108,14 @@ class CrispProvider extends React.Component {
       }
     }
 
-    const newHash =  {
+    const newHash = {
       ...parseCurrentHash(),
-      [`${tableData.prefix}`]: fragmentParams
+      [`${tableData.prefix}`]: fragmentParams,
     }
 
-    window.location.hash = Buffer.from(JSON.stringify(newHash)).toString('base64')
+    window.location.hash = Buffer.from(JSON.stringify(newHash)).toString(
+      'base64',
+    )
   }
 
   submitSearchQueryFromFragment = () => {
@@ -120,11 +128,17 @@ class CrispProvider extends React.Component {
       fragmentStateObj.search_string,
       fragmentStateObj.page_length,
       fragmentStateObj.page,
-      fragmentStateObj.search_params
+      fragmentStateObj.search_params,
     )
   }
 
-  submitSearchQuery = (order, search_string, page_length, page, search_params) => {
+  submitSearchQuery = (
+    order,
+    search_string,
+    page_length,
+    page,
+    search_params,
+  ) => {
     const { tableData } = this.state
     const { search_path, parent_id, attachments } = tableData
     const { uuid, id } = this.props
@@ -140,14 +154,14 @@ class CrispProvider extends React.Component {
       page,
       id,
       uuid,
-      search_params
+      search_params,
     }
 
     for (let attachment in attachments) {
       params[attachment] = attachments[attachment]
     }
 
-    axios.get(search_path, { params }).then(response => {
+    axios.get(search_path, { params }).then((response) => {
       this.setState({
         tableData: {
           ...tableData,
@@ -158,10 +172,10 @@ class CrispProvider extends React.Component {
           search_string,
           search_params,
           page,
-          page_length
+          page_length,
         },
         tableDataLoading: false,
-        selectedRows: []
+        selectedRows: [],
       })
       this.defaultColumns = response.data.columns
     })
@@ -171,11 +185,14 @@ class CrispProvider extends React.Component {
     const { tableData } = this.state
     const original_record = tableData.records[row_index]
     const record = {
-      id: original_record.id
+      id: original_record.id,
     }
     for (let i in tableData.columns) {
       const column = tableData.columns[i]
-      record[column.name] = column_index === parseInt(i) ? event.target.value : original_record.record[i]
+      record[column.name] =
+        column_index === parseInt(i)
+          ? event.target.value
+          : original_record.record[i]
     }
 
     const request = new XMLHttpRequest()
@@ -188,7 +205,7 @@ class CrispProvider extends React.Component {
       if (request.status >= 200 && request.status < 400) {
         const rows = tableData.records
         const row = rows[row_index]
-        row.record = tableData.columns.map(column => record[column.name])
+        row.record = tableData.columns.map((column) => record[column.name])
         rows[row_index] = row
         this.setState({ tableData: { ...tableData, records: rows } })
       } else {
@@ -214,18 +231,23 @@ class CrispProvider extends React.Component {
         request.open('DELETE', record.delete_path, true)
         request.withCredentials = true
         request.setRequestHeader('X-CSRF-Token', csrfToken())
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        request.setRequestHeader(
+          'Content-Type',
+          'application/x-www-form-urlencoded',
+        )
         request.onload = () => {
           if (request.status >= 200 && request.status < 400) {
-            const records = tableData.records.filter(recordObj => recordObj.id !== record.id)
+            const records = tableData.records.filter(
+              (recordObj) => recordObj.id !== record.id,
+            )
             this.setState({
               tableData: {
                 ...tableData,
                 records: records,
                 records_count: records.length,
                 results_count: this.state.results_count - 1,
-                query_in_progress: false
-              }
+                query_in_progress: false,
+              },
             })
           }
         }
@@ -235,8 +257,17 @@ class CrispProvider extends React.Component {
   }
 
   handleGetTableData = () => {
-    const {tableData} = this.state
-    const {id, uuid, search_path, parent_id, attachments, search_string, order, columns} = tableData
+    const { tableData } = this.state
+    const {
+      id,
+      uuid,
+      search_path,
+      parent_id,
+      attachments,
+      search_string,
+      order,
+      columns,
+    } = tableData
 
     const params = {
       id,
@@ -246,14 +277,14 @@ class CrispProvider extends React.Component {
       like: search_string,
       order_field: order.field,
       order_reverse: !!order.reverse,
-      parent_id: parent_id
+      parent_id: parent_id,
     }
 
     for (let attachment in attachments) {
       params[attachment] = attachments[attachment]
     }
 
-    return axios.get(search_path, {params}).then(response => {
+    return axios.get(search_path, { params }).then((response) => {
       const recordIndices = []
       const recordArrays = [[]]
 
@@ -264,10 +295,8 @@ class CrispProvider extends React.Component {
         }
       })
 
-      response.data.records.forEach(row => {
-        recordArrays.push(
-          recordIndices.map(index => row.record[index])
-        )
+      response.data.records.forEach((row) => {
+        recordArrays.push(recordIndices.map((index) => row.record[index]))
       })
 
       this.setState({
@@ -278,7 +307,7 @@ class CrispProvider extends React.Component {
     })
   }
 
-  toggleColumns = e => {
+  toggleColumns = (e) => {
     const { tableData } = this.state
 
     const columns = tableData.columns.slice()
@@ -288,8 +317,8 @@ class CrispProvider extends React.Component {
     this.setState({
       tableData: {
         ...tableData,
-        columns
-      }
+        columns,
+      },
     })
   }
 
@@ -299,12 +328,12 @@ class CrispProvider extends React.Component {
     this.setState({
       tableData: {
         ...tableData,
-        columns: this.defaultColumns
-      }
+        columns: this.defaultColumns,
+      },
     })
   }
 
-  toggleAllRows = e => {
+  toggleAllRows = (e) => {
     let selectedRows = e.target.checked ? this.state.tableData.records : []
 
     this.setState({ selectedRows })
@@ -315,7 +344,7 @@ class CrispProvider extends React.Component {
     if (e.target.checked) {
       selectedRows.push(value)
     } else {
-      const rowIndex = selectedRows.findIndex(row => row === value)
+      const rowIndex = selectedRows.findIndex((row) => row === value)
       selectedRows.splice(rowIndex, 1)
     }
 
@@ -327,17 +356,17 @@ class CrispProvider extends React.Component {
     const requestBody = {
       table: prefix.slice(0, prefix.length - 1),
       changed_fields: collectedData,
-      ids: this.state.selectedRows.map(row => row.id)
+      ids: this.state.selectedRows.map((row) => row.id),
     }
 
     axios.post(bulk_update_path, requestBody).then(
       () => {
         this.setState({ selectedRows: [] }, () => onSuccess())
       },
-      error => {
+      (error) => {
         const errorMessage = error.response.data
         this.setState({ errorMessage })
-      }
+      },
     )
   }
 
@@ -352,7 +381,10 @@ class CrispProvider extends React.Component {
     return (
       defaultColumns.length !== columns.length ||
       !defaultColumns.every(
-        (column, index) => columns[index] && column && !!columns[index].hidden === !!column.hidden
+        (column, index) =>
+          columns[index] &&
+          column &&
+          !!columns[index].hidden === !!column.hidden,
       )
     )
   }
@@ -384,9 +416,8 @@ class CrispProvider extends React.Component {
           hasColumnVisibilityChanged: this.hasColumnVisibilityChanged(),
           isAdvancedSearchActive: this.isAdvancedSearchActive(),
           handleRowSelect: this.handleRowSelect,
-          bulkEdit: this.bulkEdit
-        }}
-      >
+          bulkEdit: this.bulkEdit,
+        }}>
         {this.props.children}
       </Provider>
     )
