@@ -22,6 +22,7 @@ const CrispTableBase = () => {
     selectedRows,
     toggleAllRows,
   } = useContext(CrispContext)
+
   const {
     bulk_update_path,
     search_path,
@@ -32,6 +33,7 @@ const CrispTableBase = () => {
     records,
     can_save,
   } = tableData
+
   const bulk =
     bulk_update_path &&
     can_save &&

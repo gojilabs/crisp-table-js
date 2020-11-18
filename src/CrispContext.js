@@ -2,8 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import GojiLabs from './GojiLabs'
 
-let CrispContext
-const { Consumer } = (CrispContext = React.createContext())
+const CrispContext = React.createContext()
+const { Provider, Consumer } = CrispContext
 
 const parseCurrentHash = () =>
   JSON.parse(
