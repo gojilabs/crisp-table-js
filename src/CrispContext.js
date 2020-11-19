@@ -1,5 +1,4 @@
 import React from 'react'
-import axios from 'axios'
 import GojiLabs from './GojiLabs'
 
 const CrispContext = React.createContext()
@@ -89,11 +88,7 @@ class CrispProvider extends React.Component {
   }
 
   componentDidMount() {
-    const csrfToken = document.querySelector('[name="csrf-token"]').content
-    axios.defaults.headers.common['X-CSRF-Token'] = csrfToken
-
     window.addEventListener('hashchange', this.submitSearchQueryFromFragment)
-
     this.submitSearchQueryFromFragment()
   }
 
@@ -144,12 +139,14 @@ class CrispProvider extends React.Component {
     const { uuid, id } = this.props
 
     this.setState({ tableDataLoading: true })
-    const params = {
+
+    const body = {
       limit: page_length,
       like: search_string,
       order_field: order.field,
       order_reverse: !!order.reverse,
       class: this.props['class'],
+      table_class: this.props.table_class,
       parent_id,
       page,
       id,
@@ -158,16 +155,30 @@ class CrispProvider extends React.Component {
     }
 
     for (let attachment in attachments) {
-      params[attachment] = attachments[attachment]
+      body[attachment] = attachments[attachment]
     }
 
-    axios.get(search_path, { params }).then((response) => {
+    for (let key in body) {
+      if (body[key] === undefined) {
+        delete body[key]
+      }
+    }
+
+    const url = `${search_path}?${new URLSearchParams(body).toString()}`
+
+    const request = new XMLHttpRequest()
+    request.open('GET', url, true)
+    request.setRequestHeader('Content-Type', 'application/json')
+
+    request.onload = () => {
+      const data = JSON.parse(request.response)
+
       this.setState({
         tableData: {
           ...tableData,
-          records: response.data.records,
-          records_count: response.data.records_count,
-          results_count: response.data.results_count,
+          records: data.records,
+          records_count: data.records_count,
+          results_count: data.results_count,
           order,
           search_string,
           search_params,
@@ -177,8 +188,10 @@ class CrispProvider extends React.Component {
         tableDataLoading: false,
         selectedRows: [],
       })
-      this.defaultColumns = response.data.columns
-    })
+      this.defaultColumns = data.columns
+    }
+
+    request.send()
   }
 
   handleFieldUpdate = (row_index, column_index, event) => {
@@ -269,7 +282,7 @@ class CrispProvider extends React.Component {
       columns,
     } = tableData
 
-    const params = {
+    const body = {
       id,
       uuid,
       class: tableData['class'],
@@ -281,10 +294,25 @@ class CrispProvider extends React.Component {
     }
 
     for (let attachment in attachments) {
-      params[attachment] = attachments[attachment]
+      body[attachment] = attachments[attachment]
     }
 
-    return axios.get(search_path, { params }).then((response) => {
+    for (let key in body) {
+      if (body[key] === undefined) {
+        delete body[key]
+      }
+    }
+
+    const url = `${search_path}?${new URLSearchParams(body).toString()}`
+    console.log(url)
+
+    const request = new XMLHttpRequest()
+    request.open('GET', url, true)
+    request.setRequestHeader('Content-Type', 'application/json')
+
+    request.onload = () => {
+      const data = JSON.parse(request.response)
+
       const recordIndices = []
       const recordArrays = [[]]
 
@@ -295,7 +323,7 @@ class CrispProvider extends React.Component {
         }
       })
 
-      response.data.records.forEach((row) => {
+      data.records.forEach((row) => {
         recordArrays.push(recordIndices.map((index) => row.record[index]))
       })
 
@@ -303,8 +331,10 @@ class CrispProvider extends React.Component {
         csvData: recordArrays,
       })
 
-      return response.data
-    })
+      return data
+    }
+
+    request.send()
   }
 
   toggleColumns = (e) => {
@@ -359,15 +389,15 @@ class CrispProvider extends React.Component {
       ids: this.state.selectedRows.map((row) => row.id),
     }
 
-    axios.post(bulk_update_path, requestBody).then(
-      () => {
-        this.setState({ selectedRows: [] }, () => onSuccess())
-      },
-      (error) => {
-        const errorMessage = error.response.data
-        this.setState({ errorMessage })
-      },
-    )
+    const request = new XMLHttpRequest()
+    request.open('PUT', bulk_update_path, true)
+    request.setRequestHeader('Content-Type', 'application/json')
+
+    request.onload = () => {
+      this.setState({ selectedRows: [] }, () => onSuccess())
+    }
+
+    request.send(JSON.stringify(requestBody))
   }
 
   hasColumnVisibilityChanged = () => {
