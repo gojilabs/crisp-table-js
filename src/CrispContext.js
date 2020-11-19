@@ -133,6 +133,7 @@ class CrispProvider extends React.Component {
     page_length,
     page,
     search_params,
+    on_response,
   ) => {
     const { tableData } = this.state
     const { search_path, parent_id, attachments } = tableData
@@ -150,8 +151,8 @@ class CrispProvider extends React.Component {
       parent_id,
       page,
       id,
-      uuid,
       search_params,
+      uuid,
     }
 
     for (let attachment in attachments) {
@@ -159,18 +160,22 @@ class CrispProvider extends React.Component {
     }
 
     for (let key in body) {
-      if (body[key] === undefined) {
+      if (body[key] === undefined || body[key] === null) {
         delete body[key]
       }
     }
 
-    const url = `${search_path}?${new URLSearchParams(body).toString()}`
+    const url = `${search_path}?q=${window.btoa(JSON.stringify(body))}`
 
     const request = new XMLHttpRequest()
     request.open('GET', url, true)
     request.setRequestHeader('Content-Type', 'application/json')
 
     request.onload = () => {
+      if (on_response) {
+        return on_response(request)
+      }
+
       const data = JSON.parse(request.response)
 
       this.setState({
@@ -269,72 +274,45 @@ class CrispProvider extends React.Component {
     }
   }
 
-  handleGetTableData = () => {
+  handleGetTableData = (with_table_data) => {
     const { tableData } = this.state
-    const {
-      id,
-      uuid,
-      search_path,
-      parent_id,
-      attachments,
-      search_string,
+    const { columns, order, search_string } = tableData
+    const { search_params } = fragmentParamsToState(tableData)
+
+    return this.submitSearchQuery(
       order,
-      columns,
-    } = tableData
+      search_string,
+      'All',
+      1,
+      search_params,
+      (request) => {
+        const data = JSON.parse(request.response)
 
-    const body = {
-      id,
-      uuid,
-      class: tableData['class'],
-      limit: 'All',
-      like: search_string,
-      order_field: order.field,
-      order_reverse: !!order.reverse,
-      parent_id: parent_id,
-    }
+        const recordIndices = []
+        const recordArrays = [[]]
 
-    for (let attachment in attachments) {
-      body[attachment] = attachments[attachment]
-    }
+        columns.forEach((column, index) => {
+          if (!column.hidden) {
+            recordIndices.push(index)
+            recordArrays[0].push(column.title)
+          }
+        })
 
-    for (let key in body) {
-      if (body[key] === undefined) {
-        delete body[key]
-      }
-    }
+        data.records.forEach((row) => {
+          recordArrays.push(recordIndices.map((index) => row.record[index]))
+        })
 
-    const url = `${search_path}?${new URLSearchParams(body).toString()}`
-    console.log(url)
+        this.setState({
+          csvData: recordArrays,
+        })
 
-    const request = new XMLHttpRequest()
-    request.open('GET', url, true)
-    request.setRequestHeader('Content-Type', 'application/json')
-
-    request.onload = () => {
-      const data = JSON.parse(request.response)
-
-      const recordIndices = []
-      const recordArrays = [[]]
-
-      columns.forEach((column, index) => {
-        if (!column.hidden) {
-          recordIndices.push(index)
-          recordArrays[0].push(column.title)
+        if (with_table_data) {
+          return with_table_data(data)
         }
-      })
 
-      data.records.forEach((row) => {
-        recordArrays.push(recordIndices.map((index) => row.record[index]))
-      })
-
-      this.setState({
-        csvData: recordArrays,
-      })
-
-      return data
-    }
-
-    request.send()
+        return data
+      },
+    )
   }
 
   toggleColumns = (e) => {

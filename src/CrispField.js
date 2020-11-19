@@ -57,7 +57,12 @@ export default class CrispField extends React.Component {
   }
 
   renderInteger = () => {
-    return this.value()
+    const integer = this.value()
+    if (!integer && this.props.column.hasOwnProperty('default')) {
+      return this.props.column.default
+    }
+
+    return integer
   }
 
   renderDate = () => {
@@ -76,6 +81,15 @@ export default class CrispField extends React.Component {
       if (this.constructor.isValidDate(scrubbedValue)) {
         return new Date(scrubbedValue).toLocaleString()
       }
+    }
+
+    return null
+  }
+
+  renderUsdMoney = () => {
+    const number = parseFloat(this.renderInteger())
+    if (!isNaN(number)) {
+      return `$ ${(number / 100.0).toFixed(2)}`
     }
 
     return null

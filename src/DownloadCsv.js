@@ -10,7 +10,7 @@ export default class DownloadCsv extends React.Component {
   linkRef = createRef()
 
   handleAsyncClick = () => {
-    this.context.getTableData().then(() => {
+    this.context.getTableData(() => {
       this.linkRef.current.link.click()
     })
   }
