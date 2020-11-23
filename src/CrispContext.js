@@ -1,5 +1,4 @@
 import React from 'react'
-import GojiLabs from './GojiLabs'
 
 const CrispContext = React.createContext()
 const { Provider, Consumer } = CrispContext
@@ -231,10 +230,10 @@ class CrispProvider extends React.Component {
         message = request.responseText
       }
 
-      if (GojiLabs) {
-        GojiLabs.showFlash(flash, message, true)
-        setTimeout(GojiLabs.hideAndClearFlash, 10000)
-      }
+      try {
+        eval('GojiLabs.showFlash(flash, message, true)')
+        eval('setTimeout(GojiLabs.hideAndClearFlash, 10000)')
+      } catch (_) {}
     }
 
     request.send(JSON.stringify(record))
