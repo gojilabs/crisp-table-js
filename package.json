@@ -12,9 +12,9 @@
     "prop-types": "^15.7"
   },
   "name": "crisp-table",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The frontend for CrispTable, a fast and feature-rich React-based table library.",
-  "main": "index.js",
+  "main": "CrispTable.js",
   "repository": "https://github.com/gojilabs/crisp-table-js",
   "author": "Adam Sumner <adam@gojilabs.com>",
   "license": "MIT",

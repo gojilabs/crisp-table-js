@@ -16,7 +16,7 @@ And then execute:
 
 After installation, integrate it by:
 
-1. Adding `import CrispTable from 'crisp-table/src` into your Webpack pipeline
+1. Adding `import CrispTable from 'crisp-table` into your Webpack pipeline
 2. Installing a [backend](https://github.com/gojilabs/crisp-table-rb) and following the directions there, only a Ruby on Rails backend exists currently.
 
 ## Contributing
