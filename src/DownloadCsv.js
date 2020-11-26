@@ -9,9 +9,15 @@ export default class DownloadCsv extends React.Component {
 
   linkRef = createRef()
 
+  state = {
+    clicked: false,
+  }
+
   handleAsyncClick = () => {
+    this.setState({ clicked: true })
     this.context.getTableData(() => {
       this.linkRef.current.link.click()
+      this.setState({ clicked: false })
     })
   }
 
@@ -20,10 +26,14 @@ export default class DownloadCsv extends React.Component {
 
     return (
       <React.Fragment>
-        <a className='download-csv' onClick={this.handleAsyncClick}>
+        <button
+          className={`download-csv${(this.state.clicked && ' active') ||
+            ' inactive'}`}
+          onClick={this.handleAsyncClick}>
           <i className='fa fa-download' />
-        </a>
+        </button>
         <CSVLink
+          style={{ display: 'none' }}
           data={csvData}
           filename={`${tableData.title.toLocaleLowerCase()}.csv`}
           target='_blank'

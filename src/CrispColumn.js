@@ -22,12 +22,6 @@ export default class CrispColumn extends React.Component {
     const { searchable, sortable, title, field } = this.props.column
     const { tableData } = this.context
 
-    const rowClassNames = classNames({
-      'crisp-column': true,
-      searchable: searchable,
-      sortable: sortable,
-    })
-
     const sortDirection =
       tableData.order.field === field ? !!tableData.order.reverse : undefined
 
@@ -38,6 +32,14 @@ export default class CrispColumn extends React.Component {
         sort_arrow = sortDirection ? ' ↑' : ' ↓'
       }
     }
+
+    const rowClassNames = classNames({
+      'crisp-column': true,
+      searchable: searchable,
+      sortable: sortable,
+      inactive: sort_arrow === ' ↕',
+      active: sort_arrow !== ' ↕',
+    })
 
     return (
       <th

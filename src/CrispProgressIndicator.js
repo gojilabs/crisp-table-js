@@ -3,7 +3,7 @@ import React from 'react'
 const CrispProgressIndicator = (props) => {
   if (props.tableDataLoading) {
     return (
-      <div className='progress-indicator'>
+      <span className='progress-indicator'>
         <div className='sk-fading-circle'>
           <div className='sk-circle1 sk-circle' />
           <div className='sk-circle2 sk-circle' />
@@ -18,7 +18,7 @@ const CrispProgressIndicator = (props) => {
           <div className='sk-circle11 sk-circle' />
           <div className='sk-circle12 sk-circle' />
         </div>
-      </div>
+      </span>
     )
   } else {
     return <span />

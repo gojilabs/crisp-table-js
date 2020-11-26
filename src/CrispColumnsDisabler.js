@@ -52,8 +52,7 @@ class CrispColumnsDisabler extends React.Component {
           style={customStyles}
           onRequestClose={this.toggleModal}>
           <div className='columns-disabler-modal'>
-            <h2 className='text-center'>{title} Table</h2>
-            <h4 className='text-center'>Column Visibility</h4>
+            <h2 className='text-center'>Column Visibility</h2>
             <ul>
               {columns.map((column, index) => (
                 <li key={column.title}>
@@ -63,7 +62,7 @@ class CrispColumnsDisabler extends React.Component {
                       value={index}
                       onChange={this.context.toggleColumns}
                     />
-                    {column.title}
+                    <span className='column-name'>{column.title}</span>
                   </label>
                 </li>
               ))}

@@ -17,17 +17,18 @@ $brand-danger: #f05050 !default;
     }
   }
 
-  .crisp-search input {
-    background-color: transparent;
+  .active {
+    color: $brand-primary;
   }
 
-  .download-csv {
-    padding-left: 7px;
-    padding-right: 5px;
+  .inactive {
+    color: inherit;
+  }
 
-    &:hover {
-      cursor: pointer;
-    }
+  .crisp-search input {
+    background-color: transparent;
+    // margin-bottom: 0;
+    padding-bottom: 2px;
   }
 
   table {
@@ -42,10 +43,16 @@ $brand-danger: #f05050 !default;
     & > * {
       display: inline;
       vertical-align: middle;
+      height: 30px;
+      background: none;
+      padding-left: 7px;
+      padding-right: 5px;
     }
   }
 
   .crisp-search {
+    margin-left: 2px;
+
     label {
       margin-right: 3px;
     }
@@ -55,7 +62,8 @@ $brand-danger: #f05050 !default;
       border-top: 0;
       border-left: 0;
       border-right: 0;
-      border-bottom: 2px dotted $brand-primary;
+      border-bottom-width: 2px;
+      border-bottom-style: dotted;
       margin-left: 3px;
       min-width: 200px;
     }
@@ -209,15 +217,6 @@ $brand-danger: #f05050 !default;
   }
 }
 
-.fields-modal-button,
-.columns-disabler-button {
-  border: none;
-  color: $brand-primary;
-  background: none;
-  padding-left: 7px;
-  padding-right: 5px;
-}
-
 .fields-modal-modal {
   h2 {
     text-align: center;
@@ -327,6 +326,8 @@ $brand-danger: #f05050 !default;
 
 .columns-disabler-modal {
   h2 {
+    margin-top: 15px;
+    margin-bottom: 15px;
     text-align: center;
   }
 
@@ -336,12 +337,18 @@ $brand-danger: #f05050 !default;
     li {
       display: block;
 
-      label {
+      & > label {
         cursor: pointer;
+        line-height: 17px;
 
-        input {
-          margin-right: 5px;
+        & > * {
+          text-align: left;
+          display: inline;
+          vertical-align: baseline;
         }
+      }
+      .column-name {
+        margin-left: 10px;
       }
     }
   }
@@ -386,13 +393,9 @@ $border-color: #c4c4c4;
     margin: 5px;
 
     & + .custom_checkbox__indicator {
-      display: block;
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      display: inline-block;
       height: 15px;
       width: 15px;
-      transform: translate(-4px, -4px);
       border: 2px solid $brand-primary;
       border-radius: 1px;
       background-color: #ffffff;
@@ -402,10 +405,6 @@ $border-color: #c4c4c4;
     &:checked {
       & + .custom_checkbox__indicator {
         background-color: $brand-primary;
-        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDEyIDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zy+PHBhdGggZD0iTTEgMy41TDQuNSA3TDEwLjUgMSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+');
-        background-position: center;
-        background-size: 11px 9px;
-        background-repeat: no-repeat;
       }
     }
 
