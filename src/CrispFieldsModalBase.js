@@ -128,17 +128,18 @@ class CrispFieldsModalBase extends React.Component {
       switch (column.type) {
         case 'Date':
         case 'Time':
+          const { value, range_value } = dataObj
           placeholder = `date${column.type === 'Time' ? ' and time' : ''}`
           return (
             <React.Fragment>
               <DatePicker
-                selected={dataObj.value ? new Date(dataObj.value) : ''}
+                selected={value && value !== '' ? new Date(value) : ''}
                 popperContainer={CalendarContainer}
                 onChange={(value) =>
                   this.handleParamChange(
                     'edit-input',
                     dataObjIndex,
-                    new Date(value),
+                    value && value !== '' ? new Date(value) : '',
                   )
                 }
                 showTimeSelect={column.type === 'Time'}
@@ -155,14 +156,14 @@ class CrispFieldsModalBase extends React.Component {
               {rangeEnabled && (
                 <DatePicker
                   selected={
-                    dataObj.range_value ? new Date(dataObj.range_value) : ''
+                    range_value && range_value !== '' ? new Date(range_value) : ''
                   }
                   popperContainer={CalendarContainer}
                   onChange={(value) =>
                     this.handleParamChange(
                       'edit-range-input',
                       dataObjIndex,
-                      new Date(value),
+                      value && value !== '' ? new Date(value) : '',
                     )
                   }
                   showTimeSelect={column.type === 'Time'}
