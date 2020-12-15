@@ -84,6 +84,16 @@ class CrispProvider extends React.Component {
       tableDataLoading: false,
       selectedRows: [],
     }
+
+    this.csrfHeader = props.csrfHeader
+    if (!this.csrfHeader || !this.csrfHeader.length) {
+      this.csrfHeader = 'X-CSRF-Token'
+    }
+
+    this.csrfToken = props.csrfToken
+    if (!this.csrfToken || !this.csrfToken.length) {
+      this.csrfToken = document.querySelector('meta[name="csrf-token"]').content
+    }
   }
 
   componentDidMount() {
@@ -215,6 +225,7 @@ class CrispProvider extends React.Component {
     const request = new XMLHttpRequest()
     request.open('PUT', original_record.update_path, true)
     request.setRequestHeader('Content-Type', 'application/json')
+    request.setRequestHeader('X-CSRF-Token', this.csrfToken)
 
     request.onload = () => {
       let flash = 'notice'
@@ -247,7 +258,7 @@ class CrispProvider extends React.Component {
         const request = new XMLHttpRequest()
         request.open('DELETE', record.delete_path, true)
         request.withCredentials = true
-        request.setRequestHeader('X-CSRF-Token', csrfToken())
+        request.setRequestHeader('X-CSRF-Token', this.csrfToken)
         request.setRequestHeader(
           'Content-Type',
           'application/x-www-form-urlencoded',
@@ -369,6 +380,7 @@ class CrispProvider extends React.Component {
     const request = new XMLHttpRequest()
     request.open('PUT', bulk_update_path, true)
     request.setRequestHeader('Content-Type', 'application/json')
+    request.setRequestHeader('X-CSRF-Token', this.csrfToken)
 
     request.onload = () => {
       this.setState({ selectedRows: [] }, () => onSuccess())
