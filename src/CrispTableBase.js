@@ -14,6 +14,7 @@ import DownloadCsv from './DownloadCsv'
 
 // context
 import { CrispContext } from './CrispContext'
+import ValueRenderer from './ValueRenderer'
 
 const CrispTableBase = () => {
   const {

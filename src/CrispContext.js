@@ -1,4 +1,5 @@
 import React from 'react'
+import ValueRenderer from './ValueRenderer'
 
 const CrispContext = React.createContext()
 const { Provider, Consumer } = CrispContext
@@ -78,9 +79,15 @@ class CrispProvider extends React.Component {
   constructor(props) {
     super(props)
 
+    const tableData = { ...props, ...fragmentParamsToState(props) }
+    tableData.columns = props.columns.map((column) => {
+      column.valueRenderer = new ValueRenderer(column)
+      return column
+    })
+
     this.state = {
       csvData: [],
-      tableData: { ...props, ...fragmentParamsToState(props) },
+      tableData: tableData,
       tableDataLoading: false,
       selectedRows: [],
     }
@@ -309,7 +316,7 @@ class CrispProvider extends React.Component {
         })
 
         data.records.forEach((row) => {
-          recordArrays.push(recordIndices.map((index) => row.record[index]))
+          recordArrays.push(columns.map((column, index) => column.valueRenderer.render(row.record[index])))
         })
 
         this.setState({
