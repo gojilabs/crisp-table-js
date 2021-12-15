@@ -316,7 +316,7 @@ class CrispProvider extends React.Component {
         })
 
         data.records.forEach((row) => {
-          recordArrays.push(columns.map((column, index) => column.valueRenderer.render(row.record[index])))
+          recordArrays.push(recordIndices.map((index) => columns[index].valueRenderer.render(row.record[index])))
         })
 
         this.setState({
