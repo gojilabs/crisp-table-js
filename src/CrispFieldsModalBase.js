@@ -139,7 +139,7 @@ class CrispFieldsModalBase extends React.Component {
                   this.handleParamChange(
                     'edit-input',
                     dataObjIndex,
-                    value && value !== '' ? new Date(value) : '',
+                    value || '',
                   )
                 }
                 showTimeSelect={column.type === 'Time'}
@@ -163,7 +163,7 @@ class CrispFieldsModalBase extends React.Component {
                     this.handleParamChange(
                       'edit-range-input',
                       dataObjIndex,
-                      value && value !== '' ? new Date(value) : '',
+                      value || '',
                     )
                   }
                   showTimeSelect={column.type === 'Time'}
