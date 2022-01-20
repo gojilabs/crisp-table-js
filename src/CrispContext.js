@@ -80,10 +80,7 @@ class CrispProvider extends React.Component {
     super(props)
 
     const tableData = { ...props, ...fragmentParamsToState(props) }
-    tableData.columns = props.columns.map((column) => {
-      column.valueRenderer = new ValueRenderer(column)
-      return column
-    })
+    tableData.columns = props.columns.map(column => ({ valueRenderer: new ValueRenderer(column), ...column }))
 
     this.state = {
       csvData: [],
@@ -251,7 +248,7 @@ class CrispProvider extends React.Component {
       try {
         eval('GojiLabs.showFlash(flash, message, true)')
         eval('setTimeout(GojiLabs.hideAndClearFlash, 10000)')
-      } catch (_) {}
+      } catch (_) { }
     }
 
     request.send(JSON.stringify(record))

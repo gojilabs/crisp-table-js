@@ -1,6 +1,9 @@
 class ValueRenderer {
   constructor(column) {
     this.column = column
+    if (column.timezone) {
+      this.dateFormatter = Intl.DateTimeFormat('default', { timeZone: column.timezone })
+    }
   }
 
   static isValidDate(rawValue) {
@@ -12,54 +15,46 @@ class ValueRenderer {
     return false
   }
 
-  static renderBoolean(value, _) {
-    return value ? 'Yes' : 'No'
-  }
+  renderBoolean = (value) => (value ? 'Yes' : 'No')
 
-  static renderString(value, _) {
-    return value
-  }
+  renderString = (value) => (value)
 
-  static renderInteger(value, column) {
+  renderInteger = (value) => {
     const intValue = parseInt(value)
-    if (!intValue && column.hasOwnProperty('default')) {
+    if (isNaN(intValue) && this.column.hasOwnProperty('default')) {
       return column.default
     }
 
     return intValue
   }
 
-  static formatDate(value, column, fallback) {
+  renderDate = (value, fallback) => {
     if (ValueRenderer.isValidDate(value)) {
+      const fallbackMethod = fallback && fallback.toString().length ? fallback : 'toLocaleDateString'
       const dateValue = new Date(value)
 
-      const dateFormatter = column.dateFormatter
-      if (dateFormatter) {
-        return dateFormatter.format(dateValue)
+      if (this.dateFormatter) {
+        return this.dateFormatter.format(dateValue)
       } else {
-        return dateValue[fallback]()
+        return dateValue[fallbackMethod]()
       }
     }
 
     return null
   }
 
-  static renderDate(value, column) {
-    return ValueRenderer.formatDate(value, column, 'toLocaleDateString')
-  }
-
-  static renderTime(value, column) {
+  renderTime = (value) => {
     if (value && value.toString()) {
       const scrubbedValue = value.toString().replace(' ', 'T')
 
-      return ValueRenderer.formatDate(value, column, 'toLocaleString')
+      return this.renderDate(value, 'toLocaleString')
     }
 
     return null
   }
 
-  static renderUsdMoney(value, column) {
-    const number = parseFloat(ValueRenderer.renderInteger(value, column))
+  renderUsdMoney = (value) => {
+    const number = parseFloat(renderInteger(value))
     if (!isNaN(number)) {
       return `$ ${(number / 100.0).toFixed(2)}`
     }
@@ -68,9 +63,9 @@ class ValueRenderer {
   }
 
   render = (value) => {
-    const renderFunction = this.constructor[`render${this.column.type}`]
+    const renderFunction = this[`render${this.column.type}`]
     if (renderFunction) {
-      return renderFunction(value, this.column)
+      return renderFunction(value)
     }
   }
 }
