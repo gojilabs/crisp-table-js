@@ -54,7 +54,7 @@ class ValueRenderer {
   }
 
   renderUsdMoney = (value) => {
-    const number = parseFloat(renderInteger(value))
+    const number = parseFloat(this.renderInteger(value))
     if (!isNaN(number)) {
       return `$ ${(number / 100.0).toFixed(2)}`
     }
