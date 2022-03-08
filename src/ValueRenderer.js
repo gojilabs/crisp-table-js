@@ -22,7 +22,7 @@ class ValueRenderer {
   renderInteger = (value) => {
     const intValue = parseInt(value)
     if (isNaN(intValue) && this.column.hasOwnProperty('default')) {
-      return column.default
+      return this.column.default
     }
 
     return intValue
