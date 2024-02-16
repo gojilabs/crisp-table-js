@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import Modal from 'react-modal'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
+import moment from 'moment-timezone';
 
 // contexts
 import { CrispContext } from './CrispContext'
@@ -10,11 +11,11 @@ import { CrispContext } from './CrispContext'
 const CalendarContainer = ({ children }) =>
   children
     ? createPortal(
-        React.cloneElement(children, {
-          className: 'react-datepicker-popper',
-        }),
-        document.body,
-      )
+      React.cloneElement(children, {
+        className: 'react-datepicker-popper',
+      }),
+      document.body,
+    )
     : null
 
 Modal.setAppElement('body')
@@ -71,11 +72,11 @@ class CrispFieldsModalBase extends React.Component {
         break
       case 'edit-input':
         collectedData[index].value = Array.isArray(newValue)
-          ? newValue.map((el) => el.value)
-          : newValue
+          ? newValue.map((el) => moment(el.value).toISOString(true))
+          : moment(newValue).toISOString(true)
         break
       case 'edit-range-input':
-        collectedData[index].range_value = newValue
+        collectedData[index].range_value = moment(newValue).toISOString(true)
         break
       case 'add':
         collectedData.push({})
@@ -105,8 +106,8 @@ class CrispFieldsModalBase extends React.Component {
       ]
       const selectedValue = Array.isArray(dataObj.value)
         ? selectOptions.filter((option) =>
-            dataObj.value.some((valueEl) => valueEl === option.value),
-          )
+          dataObj.value.some((valueEl) => valueEl === option.value),
+        )
         : selectOptions.find((option) => dataObj.value === option.value)
       return (
         <Select
@@ -133,47 +134,42 @@ class CrispFieldsModalBase extends React.Component {
           return (
             <React.Fragment>
               <DatePicker
-                selected={value && value !== '' ? new Date(value) : ''}
+                selected={value && value !== '' ? moment.tz(value, 'America/New_York').toDate() : ''}
                 popperContainer={CalendarContainer}
-                onChange={(value) =>
+                onChange={(value) => {
+                  const dateInNewYork = value ? moment.tz(value, 'America/New_York').format() : '';
                   this.handleParamChange(
                     'edit-input',
                     dataObjIndex,
                     value || '',
                   )
-                }
+                }}
                 showTimeSelect={column.type === 'Time'}
                 timeFormat='HH:mm:ss'
-                dateFormat={`dd/MM/yyyy${
-                  column.type === 'Time' ? ', HH:mm:ss' : ''
-                }`}
-                placeholderText={`Select${
-                  rangeEnabled ? ' start ' : ' '
-                }${placeholder}`}
-                minDate={new Date(column.min)}
-                maxDate={new Date(column.max)}
+                dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''}`}
+                placeholderText={`Select${rangeEnabled ? ' start ' : ' '}${placeholder}`}
+                minDate={moment.tz(new Date(column.min), 'America/New_York').toDate()}
+                maxDate={moment.tz(new Date(column.max), 'America/New_York').toDate()}
               />
               {rangeEnabled && (
                 <DatePicker
-                  selected={
-                    range_value && range_value !== '' ? new Date(range_value) : ''
-                  }
+                  selected={range_value && range_value !== '' ? moment.tz(range_value, 'America/New_York').toDate() : ''}
                   popperContainer={CalendarContainer}
-                  onChange={(value) =>
+                  onChange={(value) => {
+                    const dateInNewYork = value ? moment.tz(value, 'America/New_York').format() : '';
                     this.handleParamChange(
                       'edit-range-input',
                       dataObjIndex,
                       value || '',
                     )
-                  }
+
+                  }}
                   showTimeSelect={column.type === 'Time'}
                   timeFormat='HH:mm:ss'
-                  dateFormat={`dd/MM/yyyy${
-                    column.type === 'Time' ? ', HH:mm:ss' : ''
-                  }`}
+                  dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''}`}
                   placeholderText={`Select end ${placeholder}`}
-                  minDate={new Date(column.min)}
-                  maxDate={new Date(column.max)}
+                  minDate={moment.tz(new Date(column.min), 'America/New_York').toDate()}
+                  maxDate={moment.tz(new Date(column.max), 'America/New_York').toDate()}
                 />
               )}
             </React.Fragment>
@@ -312,9 +308,8 @@ class CrispFieldsModalBase extends React.Component {
       <React.Fragment>
         <button
           onClick={this.toggleModal}
-          className={`fields-modal-button ${
-            this.context.isAdvancedSearchActive ? '' : 'in'
-          }active`}
+          className={`fields-modal-button ${this.context.isAdvancedSearchActive ? '' : 'in'
+            }active`}
           type='button'>
           <i className={`fa ${this.buttonIcon || 'fa-search'}`} />
         </button>
