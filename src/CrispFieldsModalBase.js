@@ -134,42 +134,44 @@ class CrispFieldsModalBase extends React.Component {
           return (
             <React.Fragment>
               <DatePicker
-                selected={value && value !== '' ? moment.tz(value, 'America/New_York').toDate() : ''}
+                selected={value && value !== '' ? new Date(value) : ''}
                 popperContainer={CalendarContainer}
-                onChange={(value) => {
-                  const dateInNewYork = value ? moment.tz(value, 'America/New_York').format() : '';
+                onChange={(value) =>
                   this.handleParamChange(
                     'edit-input',
                     dataObjIndex,
                     value || '',
                   )
-                }}
+                }
                 showTimeSelect={column.type === 'Time'}
                 timeFormat='HH:mm:ss'
-                dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''}`}
-                placeholderText={`Select${rangeEnabled ? ' start ' : ' '}${placeholder}`}
-                minDate={moment.tz(new Date(column.min), 'America/New_York').toDate()}
-                maxDate={moment.tz(new Date(column.max), 'America/New_York').toDate()}
+                dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''
+                  }`}
+                placeholderText={`Select${rangeEnabled ? ' start ' : ' '
+                  }${placeholder}`}
+                minDate={new Date(column.min)}
+                maxDate={new Date(column.max)}
               />
               {rangeEnabled && (
                 <DatePicker
-                  selected={range_value && range_value !== '' ? moment.tz(range_value, 'America/New_York').toDate() : ''}
+                  selected={
+                    range_value && range_value !== '' ? new Date(range_value) : ''
+                  }
                   popperContainer={CalendarContainer}
-                  onChange={(value) => {
-                    const dateInNewYork = value ? moment.tz(value, 'America/New_York').format() : '';
+                  onChange={(value) =>
                     this.handleParamChange(
                       'edit-range-input',
                       dataObjIndex,
                       value || '',
                     )
-
-                  }}
+                  }
                   showTimeSelect={column.type === 'Time'}
                   timeFormat='HH:mm:ss'
-                  dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''}`}
+                  dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''
+                    }`}
                   placeholderText={`Select end ${placeholder}`}
-                  minDate={moment.tz(new Date(column.min), 'America/New_York').toDate()}
-                  maxDate={moment.tz(new Date(column.max), 'America/New_York').toDate()}
+                  minDate={new Date(column.min)}
+                  maxDate={new Date(column.max)}
                 />
               )}
             </React.Fragment>
