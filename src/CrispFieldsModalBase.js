@@ -145,8 +145,19 @@ class CrispFieldsModalBase extends React.Component {
                 }
                 showTimeSelect={column.type === 'Time'}
                 timeFormat='HH:mm:ss'
-                dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''
-                  }`}
+                dateFormat={
+                  new Intl.DateTimeFormat(navigator.language, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric' }).formatToParts().map(({ type, value }) => {
+                      switch (type) {
+                        case 'day': return 'dd';
+                        case 'month': return 'MM';
+                        case 'year': return 'yyyy';
+                        default: return value;
+                      }
+                  }).join('') + (column.type === 'Time' ? ', HH:mm:ss' : '')
+                }
                 placeholderText={`Select${rangeEnabled ? ' start ' : ' '
                   }${placeholder}`}
                 minDate={new Date(column.min)}
@@ -167,8 +178,20 @@ class CrispFieldsModalBase extends React.Component {
                   }
                   showTimeSelect={column.type === 'Time'}
                   timeFormat='HH:mm:ss'
-                  dateFormat={`MM/dd/yyyy${column.type === 'Time' ? ', HH:mm:ss' : ''
-                    }`}
+                  dateFormat={
+                    new Intl.DateTimeFormat(navigator.language, {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    }).formatToParts().map(({ type, value }) => {
+                      switch (type) {
+                        case 'day': return 'dd';
+                        case 'month': return 'MM';
+                        case 'year': return 'yyyy';
+                        default: return value;
+                      }
+                    }).join('') + (column.type === 'Time' ? ', HH:mm:ss' : '')
+                  }
                   placeholderText={`Select end ${placeholder}`}
                   minDate={new Date(column.min)}
                   maxDate={new Date(column.max)}
