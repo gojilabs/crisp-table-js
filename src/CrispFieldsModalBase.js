@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import Modal from 'react-modal'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
+import moment from 'moment-timezone';
 
 // contexts
 import { CrispContext } from './CrispContext'
@@ -10,11 +11,11 @@ import { CrispContext } from './CrispContext'
 const CalendarContainer = ({ children }) =>
   children
     ? createPortal(
-        React.cloneElement(children, {
-          className: 'react-datepicker-popper',
-        }),
-        document.body,
-      )
+      React.cloneElement(children, {
+        className: 'react-datepicker-popper',
+      }),
+      document.body,
+    )
     : null
 
 Modal.setAppElement('body')
@@ -71,11 +72,11 @@ class CrispFieldsModalBase extends React.Component {
         break
       case 'edit-input':
         collectedData[index].value = Array.isArray(newValue)
-          ? newValue.map((el) => el.value)
-          : newValue
+          ? newValue.map((el) => moment(el.value).toISOString(true))
+          : moment(newValue).toISOString(true)
         break
       case 'edit-range-input':
-        collectedData[index].range_value = newValue
+        collectedData[index].range_value = moment(newValue).toISOString(true)
         break
       case 'add':
         collectedData.push({})
@@ -105,8 +106,8 @@ class CrispFieldsModalBase extends React.Component {
       ]
       const selectedValue = Array.isArray(dataObj.value)
         ? selectOptions.filter((option) =>
-            dataObj.value.some((valueEl) => valueEl === option.value),
-          )
+          dataObj.value.some((valueEl) => valueEl === option.value),
+        )
         : selectOptions.find((option) => dataObj.value === option.value)
       return (
         <Select
@@ -144,12 +145,21 @@ class CrispFieldsModalBase extends React.Component {
                 }
                 showTimeSelect={column.type === 'Time'}
                 timeFormat='HH:mm:ss'
-                dateFormat={`dd/MM/yyyy${
-                  column.type === 'Time' ? ', HH:mm:ss' : ''
-                }`}
-                placeholderText={`Select${
-                  rangeEnabled ? ' start ' : ' '
-                }${placeholder}`}
+                dateFormat={
+                  new Intl.DateTimeFormat(navigator.language, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric' }).formatToParts().map(({ type, value }) => {
+                      switch (type) {
+                        case 'day': return 'dd';
+                        case 'month': return 'MM';
+                        case 'year': return 'yyyy';
+                        default: return value;
+                      }
+                  }).join('') + (column.type === 'Time' ? ', HH:mm:ss' : '')
+                }
+                placeholderText={`Select${rangeEnabled ? ' start ' : ' '
+                  }${placeholder}`}
                 minDate={new Date(column.min)}
                 maxDate={new Date(column.max)}
               />
@@ -168,9 +178,20 @@ class CrispFieldsModalBase extends React.Component {
                   }
                   showTimeSelect={column.type === 'Time'}
                   timeFormat='HH:mm:ss'
-                  dateFormat={`dd/MM/yyyy${
-                    column.type === 'Time' ? ', HH:mm:ss' : ''
-                  }`}
+                  dateFormat={
+                    new Intl.DateTimeFormat(navigator.language, {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    }).formatToParts().map(({ type, value }) => {
+                      switch (type) {
+                        case 'day': return 'dd';
+                        case 'month': return 'MM';
+                        case 'year': return 'yyyy';
+                        default: return value;
+                      }
+                    }).join('') + (column.type === 'Time' ? ', HH:mm:ss' : '')
+                  }
                   placeholderText={`Select end ${placeholder}`}
                   minDate={new Date(column.min)}
                   maxDate={new Date(column.max)}
@@ -312,9 +333,8 @@ class CrispFieldsModalBase extends React.Component {
       <React.Fragment>
         <button
           onClick={this.toggleModal}
-          className={`fields-modal-button ${
-            this.context.isAdvancedSearchActive ? '' : 'in'
-          }active`}
+          className={`fields-modal-button ${this.context.isAdvancedSearchActive ? '' : 'in'
+            }active`}
           type='button'>
           <i className={`fa ${this.buttonIcon || 'fa-search'}`} />
         </button>
