@@ -62,30 +62,31 @@ class CrispFieldsModalBase extends React.Component {
     }
   }
 
+  convertValueToISO = (value) => {
+    if (moment(value, 'YYYY-MM-DD', true).isValid()) {
+      return moment(value, 'YYYY-MM-DD').toISOString(true);
+    } else {
+      return value;
+    }
+  };
+
   handleParamChange = (action, index, newValue) => {
     const collectedData = [...this.state.collectedData]
-
     switch (action) {
       case 'edit-select':
         collectedData[index] = {}
         collectedData[index].field = newValue
         break
       case 'edit-input':
-        const convertValueToISO = (value) => {
-          if (moment(value, 'YYYY-MM-DD', true).isValid()) {
-            return moment(value, 'YYYY-MM-DD').toISOString(true);
-          } else {
-            return value;
-          }
-        };
-
         collectedData[index].value = Array.isArray(newValue)
-          ? newValue.map((el) => convertValueToISO(el.value))
-          : convertValueToISO(newValue);
+          ? newValue.map((el) => this.convertValueToISO(el.value))
+          : this.convertValueToISO(newValue);
         break;
       case 'edit-range-input':
-        collectedData[index].range_value = moment(newValue).toISOString(true)
-        break
+        collectedData[index].range_value = Array.isArray(newValue)
+          ? newValue.map((el) => this.convertValueToISO(el.value))
+          : this.convertValueToISO(newValue);
+        break;
       case 'add':
         collectedData.push({})
         break
