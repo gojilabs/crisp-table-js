@@ -4,12 +4,13 @@
     "react-dom": "^16.4.0"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
+    "moment-timezone": "^0.5.45",
+    "prop-types": "^15.7",
     "react-csv": "^2",
     "react-datepicker": "^3",
     "react-modal": "^3",
-    "react-select": "^3",
-    "classnames": "^2.2.6",
-    "prop-types": "^15.7"
+    "react-select": "^3"
   },
   "name": "crisp-table",
   "version": "0.1.0",
