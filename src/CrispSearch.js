@@ -27,6 +27,8 @@ export default class CrispSearch extends React.Component {
   }
 
   triggerCountdown = (e) => {
+    e.preventDefault()
+
     const { tableData } = this.context
     const new_search_string = e.target.value
     this.setState({ counter: this.state.counter + 1, query: new_search_string })
