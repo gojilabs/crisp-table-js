@@ -30,7 +30,8 @@ class CrispColumnsDisabler extends React.Component {
     showModal: false,
   }
 
-  toggleModal = () => {
+  toggleModal = (e) => {
+    e.preventDefault()
     this.setState({ showModal: !this.state.showModal })
   }
 
