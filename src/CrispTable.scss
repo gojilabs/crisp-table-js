@@ -20,6 +20,10 @@ $brand-danger: #f05050 !default;
     }
   }
 
+  .table-container {
+    flex: 1;
+  }
+
   .active {
     color: $brand-primary;
   }

@@ -17,12 +17,8 @@ import { CrispContext } from './CrispContext'
 import ValueRenderer from './ValueRenderer'
 
 const CrispTableBase = () => {
-  const {
-    tableData,
-    tableDataLoading,
-    selectedRows,
-    toggleAllRows,
-  } = useContext(CrispContext)
+  const { tableData, tableDataLoading, selectedRows, toggleAllRows } =
+    useContext(CrispContext)
 
   const {
     bulk_update_path,
@@ -56,43 +52,45 @@ const CrispTableBase = () => {
           </a>
         )}
       </div>
-      <table>
-        <thead>
-          <tr>
-            {bulk && (
-              <th className='bulk-cell'>
-                <CrispCheckbox
-                  checked={
-                    records.length === selectedRows.length &&
-                    selectedRows.length !== 0
-                  }
-                  onChange={toggleAllRows}
-                  className='checkbox bulk'
-                />
-              </th>
-            )}
-            {columns.map(
-              (column, index) =>
-                !column.hidden && (
-                  <CrispColumn
-                    column={column}
-                    key={`${table_name}-col-${index}`}
+      <div className='table-container'>
+        <table>
+          <thead>
+            <tr>
+              {bulk && (
+                <th className='bulk-cell'>
+                  <CrispCheckbox
+                    checked={
+                      records.length === selectedRows.length &&
+                      selectedRows.length !== 0
+                    }
+                    onChange={toggleAllRows}
+                    className='checkbox bulk'
                   />
-                ),
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {records.map((record, index) => (
-            <CrispRow
-              bulk={bulk}
-              record={record}
-              index={index}
-              key={`${table_name}-row-${index}`}
-            />
-          ))}
-        </tbody>
-      </table>
+                </th>
+              )}
+              {columns.map(
+                (column, index) =>
+                  !column.hidden && (
+                    <CrispColumn
+                      column={column}
+                      key={`${table_name}-col-${index}`}
+                    />
+                  ),
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {records.map((record, index) => (
+              <CrispRow
+                bulk={bulk}
+                record={record}
+                index={index}
+                key={`${table_name}-row-${index}`}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
       <CrispPagination />
     </div>
   )
