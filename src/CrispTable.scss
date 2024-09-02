@@ -4,6 +4,9 @@ $brand-primary: #5d9cec !default;
 $brand-danger: #f05050 !default;
 
 .crisp-table {
+  display: flex;
+  flex-direction: column;
+
   select {
     color: inherit;
     border: none;
@@ -142,6 +145,8 @@ $brand-danger: #f05050 !default;
 
   .crisp-pagination {
     margin-top: 1em;
+    position: sticky;
+    bottom: 0;
 
     .crisp-pagination-line > * {
       vertical-align: middle;
