@@ -87,6 +87,7 @@ class CrispProvider extends React.Component {
       tableData: tableData,
       tableDataLoading: false,
       selectedRows: [],
+      bottomPaginationOffset: this.props.bottomPaginationOffset || 0,
     }
 
     this.csrfHeader = props.csrfHeader
