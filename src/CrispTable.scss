@@ -4,9 +4,6 @@ $brand-primary: #5d9cec !default;
 $brand-danger: #f05050 !default;
 
 .crisp-table {
-  display: flex;
-  flex-direction: column;
-
   select {
     color: inherit;
     border: none;
@@ -18,10 +15,6 @@ $brand-danger: #f05050 !default;
       color: inherit;
       cursor: pointer;
     }
-  }
-
-  .table-container {
-    flex: 1;
   }
 
   .active {
