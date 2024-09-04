@@ -141,7 +141,9 @@ $brand-danger: #f05050 !default;
   }
 
   .crisp-pagination {
-    margin-top: 1em;
+    position: sticky;
+    padding-bottom: 10px;
+    background-color: white;
 
     .crisp-pagination-line > * {
       vertical-align: middle;
