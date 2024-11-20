@@ -39,7 +39,7 @@ export default class CrispPagination extends React.Component {
   }
 
   render() {
-    const { tableData } = this.context
+    const { tableData, bottomPaginationOffset } = this.context
     const pages = 1 + parseInt(tableData.results_count / tableData.page_length)
 
     const page_components = []
@@ -117,7 +117,9 @@ export default class CrispPagination extends React.Component {
       ) : null
 
     return (
-      <div className='crisp-pagination'>
+      <div
+        className='crisp-pagination'
+        style={{ bottom: bottomPaginationOffset }}>
         <div className='crisp-pagination-line'>
           <div className='left-wrapper'>
             <CrispPageLength
