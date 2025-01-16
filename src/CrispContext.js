@@ -6,7 +6,7 @@ const { Provider, Consumer } = CrispContext
 
 const parseCurrentHash = () =>
   JSON.parse(
-    Buffer.from(window.location.hash, 'base64').toString('ascii') || '{}',
+    Buffer.from(window.location.hash, 'base64').toString('utf-8') || '{}',
   )
 
 const getFragmentParams = (prefix) => {
@@ -80,7 +80,10 @@ class CrispProvider extends React.Component {
     super(props)
 
     const tableData = { ...props, ...fragmentParamsToState(props) }
-    tableData.columns = props.columns.map(column => ({ valueRenderer: new ValueRenderer(column), ...column }))
+    tableData.columns = props.columns.map((column) => ({
+      valueRenderer: new ValueRenderer(column),
+      ...column,
+    }))
 
     this.state = {
       csvData: [],
@@ -249,7 +252,7 @@ class CrispProvider extends React.Component {
       try {
         eval('GojiLabs.showFlash(flash, message, true)')
         eval('setTimeout(GojiLabs.hideAndClearFlash, 10000)')
-      } catch (_) { }
+      } catch (_) {}
     }
 
     request.send(JSON.stringify(record))
@@ -314,7 +317,11 @@ class CrispProvider extends React.Component {
         })
 
         data.records.forEach((row) => {
-          recordArrays.push(recordIndices.map((index) => columns[index].valueRenderer.render(row.record[index])))
+          recordArrays.push(
+            recordIndices.map((index) =>
+              columns[index].valueRenderer.render(row.record[index]),
+            ),
+          )
         })
 
         this.setState({
