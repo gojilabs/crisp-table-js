@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 // components
 import CrispAdvancedSearch from './CrispAdvancedSearch'
 import CrispBulkUpdate from './CrispBulkUpdate'
+import CrispBulkActions from './CrispBulkActions'
 import CrispCheckbox from './CrispCheckbox'
 import CrispColumn from './CrispColumn'
 import CrispColumnsDisabler from './CrispColumnsDisabler'
@@ -29,6 +30,7 @@ const CrispTableBase = () => {
     table_name,
     records,
     can_save,
+    additional_bulk_actions,
   } = tableData
 
   const bulk =
@@ -45,6 +47,7 @@ const CrispTableBase = () => {
         {search_path && <CrispAdvancedSearch />}
         <CrispColumnsDisabler />
         {!!selectedRows.length && <CrispBulkUpdate />}
+        {!!selectedRows.length && additional_bulk_actions && additional_bulk_actions.length > 0 && <CrispBulkActions selectedRows={selectedRows} actions={additional_bulk_actions} />}
         <CrispProgressIndicator tableDataLoading={tableDataLoading} />
         {new_path && can_save && (
           <a href={new_path} className='add-entity-button'>
