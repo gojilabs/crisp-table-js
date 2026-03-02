@@ -15,7 +15,7 @@ export default class CrispBulkActions extends React.Component {
   }
 
   getSelectedIds = () => {
-    return (this.state.selectedRows || []).map(row => row.id);
+    return (this.context.selectedRows || []).map(row => row.id);
   }
 
   handleBulkAction = (e) => {
