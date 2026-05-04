@@ -19,16 +19,18 @@ class CrispAdvancedSearch extends CrispFieldsModalBase {
       ? Object.keys(context.tableData.search_params).reduce(
           (accumulator, key) => {
             const searchObj = context.tableData.search_params[key]
-            const serializedObj = searchObj.from
-              ? {
-                  field: key,
-                  value: searchObj.from,
-                  range_value: searchObj.to,
-                }
-              : {
-                  field: key,
-                  value: searchObj,
-                }
+            let serializedObj
+            if (searchObj === '__present__') {
+              serializedObj = { field: key, value: '__present__', isPresent: true }
+            } else if (searchObj.from) {
+              serializedObj = {
+                field: key,
+                value: searchObj.from,
+                range_value: searchObj.to,
+              }
+            } else {
+              serializedObj = { field: key, value: searchObj }
+            }
 
             return [...accumulator, serializedObj]
           },

@@ -231,9 +231,18 @@ $brand-danger: #f05050 !default;
 
     li {
       display: flex;
-      align-items: center;
+      flex-direction: row;
+      align-items: flex-start;
       margin-bottom: 20px;
       position: relative;
+
+      .value-with-presence {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 10px;
+        gap: 6px;
+      }
 
       .remove-button {
         border: none;
@@ -261,7 +270,7 @@ $brand-danger: #f05050 !default;
         }
       }
 
-      & > div {
+      & > div:not(.filter-row) {
         width: 200px;
         margin-left: 10px;
 
@@ -270,8 +279,63 @@ $brand-danger: #f05050 !default;
         }
       }
 
+      .filter-row > div {
+        width: 200px;
+        margin-left: 0;
+      }
+
+      .value-with-presence > input[type='text'],
+      .value-with-presence .react-datepicker-wrapper .react-datepicker__input-container input {
+        height: 38px;
+        padding: 0 8px;
+        width: 200px;
+        margin-left: 0;
+        border-radius: 5px;
+        border: 1px solid rgb(204, 204, 204);
+        box-sizing: border-box;
+      }
+
       & > .checkbox-wrapper {
         text-align: center;
+      }
+
+      .is-present-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 0;
+        margin-top: 0;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: normal;
+        white-space: nowrap;
+        user-select: none;
+        color: #333;
+
+        .is-present-toggle__box {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          height: 16px;
+          border: 2px solid #aaa;
+          border-radius: 3px;
+          background: #fff;
+          font-size: 11px;
+          font-weight: bold;
+          color: #fff;
+          flex-shrink: 0;
+          transition: background 0.1s, border-color 0.1s;
+        }
+
+        &.is-present-toggle--checked .is-present-toggle__box {
+          background: #5cb85c;
+          border-color: #5cb85c;
+        }
+
+        &:hover .is-present-toggle__box {
+          border-color: #5cb85c;
+        }
       }
 
       & > input[type='text'],

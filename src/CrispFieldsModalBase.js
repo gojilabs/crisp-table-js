@@ -77,6 +77,15 @@ class CrispFieldsModalBase extends React.Component {
       case 'edit-range-input':
         collectedData[index].range_value = newValue
         break
+      case 'toggle-is-present':
+        collectedData[index].isPresent = !collectedData[index].isPresent
+        if (collectedData[index].isPresent) {
+          collectedData[index].value = '__present__'
+          collectedData[index].range_value = undefined
+        } else {
+          collectedData[index].value = ''
+        }
+        break
       case 'add':
         collectedData.push({})
         break
@@ -133,7 +142,7 @@ class CrispFieldsModalBase extends React.Component {
           return (
             <React.Fragment>
               <DatePicker
-                selected={value && value !== '' ? new Date(value) : ''}
+                selected={value && value !== '' && value !== '__present__' ? new Date(value) : ''}
                 popperContainer={CalendarContainer}
                 onChange={(value) =>
                   this.handleParamChange(
@@ -277,7 +286,12 @@ class CrispFieldsModalBase extends React.Component {
     const collectedData = this.state.collectedData.reduce(
       (accumulator, dataObj) => {
         if (dataObj.field) {
-          if (dataObj.range_value) {
+          if (dataObj.isPresent) {
+            return {
+              ...accumulator,
+              [dataObj.field]: '__present__',
+            }
+          } else if (dataObj.range_value) {
             return {
               ...accumulator,
               [dataObj.field]: {
@@ -330,6 +344,10 @@ class CrispFieldsModalBase extends React.Component {
                   (option) => option.field === dataObj.field,
                 )
 
+                const isPresent = !!dataObj.isPresent
+                const isSelectOrBoolean = selectedValue &&
+                  (selectedValue.select_options || selectedValue.type === 'Boolean')
+
                 return (
                   <li key={index}>
                     <Select
@@ -354,7 +372,17 @@ class CrispFieldsModalBase extends React.Component {
                       }
                       menuPortalTarget={document.querySelector('body')}
                     />
-                    {this.renderInput(index, selectedValue)}
+                    <div className='value-with-presence'>
+                      {!isPresent && this.renderInput(index, selectedValue)}
+                      {!isSelectOrBoolean && (
+                        <label
+                          className={`is-present-toggle${isPresent ? ' is-present-toggle--checked' : ''}`}
+                          onClick={(e) => { e.preventDefault(); this.handleParamChange('toggle-is-present', index) }}>
+                          <span className='is-present-toggle__box'>{isPresent ? '✓' : ''}</span>
+                          <span>Is present</span>
+                        </label>
+                      )}
+                    </div>
                     {collectedData.length > 1 && (
                       <button
                         onClick={() => this.handleParamChange('remove', index)}
