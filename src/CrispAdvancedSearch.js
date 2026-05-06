@@ -2,7 +2,7 @@
 import { CrispContext } from './CrispContext'
 
 // components
-import CrispFieldsModalBase from './CrispFieldsModalBase'
+import CrispFieldsModalBase, { PRESENT_SENTINEL } from './CrispFieldsModalBase'
 
 const emptyCollectedData = [{}]
 
@@ -20,8 +20,8 @@ class CrispAdvancedSearch extends CrispFieldsModalBase {
           (accumulator, key) => {
             const searchObj = context.tableData.search_params[key]
             let serializedObj
-            if (searchObj === '__present__') {
-              serializedObj = { field: key, value: '__present__', isPresent: true }
+            if (searchObj === PRESENT_SENTINEL) {
+              serializedObj = { field: key, value: PRESENT_SENTINEL, isPresent: true }
             } else if (searchObj.from) {
               serializedObj = {
                 field: key,

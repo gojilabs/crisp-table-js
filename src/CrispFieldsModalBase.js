@@ -46,6 +46,8 @@ const selectStyles = {
   }),
 }
 
+export const PRESENT_SENTINEL = '__present__'
+
 const emptyCollectedData = [{}]
 
 class CrispFieldsModalBase extends React.Component {
@@ -80,7 +82,7 @@ class CrispFieldsModalBase extends React.Component {
       case 'toggle-is-present':
         collectedData[index].isPresent = !collectedData[index].isPresent
         if (collectedData[index].isPresent) {
-          collectedData[index].value = '__present__'
+          collectedData[index].value = PRESENT_SENTINEL
           collectedData[index].range_value = undefined
         } else {
           collectedData[index].value = ''
@@ -142,7 +144,7 @@ class CrispFieldsModalBase extends React.Component {
           return (
             <React.Fragment>
               <DatePicker
-                selected={value && value !== '' && value !== '__present__' ? new Date(value) : ''}
+                selected={value && value !== '' && value !== PRESENT_SENTINEL ? new Date(value) : ''}
                 popperContainer={CalendarContainer}
                 onChange={(value) =>
                   this.handleParamChange(
@@ -289,7 +291,7 @@ class CrispFieldsModalBase extends React.Component {
           if (dataObj.isPresent) {
             return {
               ...accumulator,
-              [dataObj.field]: '__present__',
+              [dataObj.field]: PRESENT_SENTINEL,
             }
           } else if (dataObj.range_value) {
             return {
